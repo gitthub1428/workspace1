@@ -1,0 +1,2124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#09090c">
+<title>Drive Workspace</title>
+<link rel="icon" type="image/png" href="https://ik.imagekit.io/22h7wv5o2/b___Ultra_Detailed_Ima.png?updatedAt=1778874059723">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  try {
+    var t = localStorage.getItem('dw_theme') || (localStorage.getItem('drive_theme_mode') === 'white' ? 'light' : null);
+    if (t) document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+<style>
+/* ============ DESIGN TOKENS ============ */
+:root{
+  --font:'Inter',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:22px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --sidebar-w:288px;
+
+  --bg:#09090c;
+  --aura-1:rgba(124,108,255,.16);--aura-2:rgba(56,189,248,.10);
+  --surface:rgba(20,20,26,.72);--surface-solid:#131318;--surface-2:#1a1a21;--surface-3:#23232c;
+  --hover:rgba(255,255,255,.06);--press:rgba(255,255,255,.1);
+  --border:rgba(255,255,255,.08);--border-strong:rgba(255,255,255,.15);
+  --text:#ededf2;--text-2:#a4a4b4;--text-3:#70707f;
+  --accent:#8b7dff;--accent-strong:#a397ff;--accent-soft:rgba(139,125,255,.16);--on-accent:#0c0b16;
+  --success:#4ade9b;--danger:#ff6b81;--danger-soft:rgba(255,107,129,.14);--warning:#f6c35b;
+  --shadow:0 20px 60px rgba(0,0,0,.55);--shadow-sm:0 4px 16px rgba(0,0,0,.35);
+  --scrim:rgba(4,4,8,.66);
+  --k-folder:#a397ff;--k-image:#38bdf8;--k-video:#c084fc;--k-audio:#f472b6;--k-pdf:#fb7185;--k-code:#fbbf24;--k-doc:#60a5fa;--k-sheet:#34d399;--k-slides:#fb923c;--k-pad:#4ade9b;--k-other:#94a3b8;
+}
+:root[data-theme="light"]{
+  --bg:#f3f4f8;--aura-1:rgba(91,77,255,.10);--aura-2:rgba(14,165,233,.08);
+  --surface:rgba(255,255,255,.8);--surface-solid:#fff;--surface-2:#f6f6fa;--surface-3:#ececf3;
+  --hover:rgba(18,18,40,.05);--press:rgba(18,18,40,.09);
+  --border:rgba(18,18,40,.09);--border-strong:rgba(18,18,40,.17);
+  --text:#15151d;--text-2:#555869;--text-3:#878a9c;
+  --accent:#5b4dff;--accent-strong:#4a3cf0;--accent-soft:rgba(91,77,255,.1);--on-accent:#fff;
+  --success:#0e9f6e;--danger:#e11d48;--danger-soft:rgba(225,29,72,.08);--warning:#b7791f;
+  --shadow:0 20px 60px rgba(20,20,50,.16);--shadow-sm:0 4px 16px rgba(20,20,50,.08);--scrim:rgba(20,20,40,.35);
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#f3f4f8;--aura-1:rgba(91,77,255,.10);--aura-2:rgba(14,165,233,.08);
+  --surface:rgba(255,255,255,.8);--surface-solid:#fff;--surface-2:#f6f6fa;--surface-3:#ececf3;
+  --hover:rgba(18,18,40,.05);--press:rgba(18,18,40,.09);
+  --border:rgba(18,18,40,.09);--border-strong:rgba(18,18,40,.17);
+  --text:#15151d;--text-2:#555869;--text-3:#878a9c;
+  --accent:#5b4dff;--accent-strong:#4a3cf0;--accent-soft:rgba(91,77,255,.1);--on-accent:#fff;
+  --success:#0e9f6e;--danger:#e11d48;--danger-soft:rgba(225,29,72,.08);--warning:#b7791f;
+  --shadow:0 20px 60px rgba(20,20,50,.16);--shadow-sm:0 4px 16px rgba(20,20,50,.08);--scrim:rgba(20,20,40,.35);
+}}
+
+/* ============ BASE ============ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font:14px/1.45 var(--font);color:var(--text);background:var(--bg);overflow:hidden;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(900px 600px at 0% 0%,var(--aura-1),transparent 60%),radial-gradient(800px 600px at 100% 100%,var(--aura-2),transparent 60%);}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+button:disabled{cursor:not-allowed;opacity:.45}
+a{color:var(--accent-strong)}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--r-sm)}
+::selection{background:var(--accent-soft)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px;border:3px solid transparent;background-clip:padding-box}
+.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:15px;height:15px}.ic-lg{width:22px;height:22px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.kbd{font:500 11px var(--mono);padding:2px 6px;border-radius:6px;border:1px solid var(--border-strong);color:var(--text-2);background:var(--surface-2)}
+.muted{color:var(--text-2)}.tiny{font-size:12px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ============ CONTROLS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 14px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface-2);font-weight:500;font-size:13px;white-space:nowrap;transition:background .15s,border-color .15s,transform .1s}
+.btn:hover:not(:disabled){background:var(--surface-3);border-color:var(--border-strong)}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn-primary{background:var(--accent);border-color:transparent;color:var(--on-accent);font-weight:600}
+.btn-primary:hover:not(:disabled){background:var(--accent-strong);border-color:transparent}
+.btn-danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,transparent);background:var(--danger-soft)}
+.btn-danger:hover:not(:disabled){background:color-mix(in srgb,var(--danger) 22%,transparent)}
+.btn-ghost{background:transparent;border-color:transparent}
+.btn-ghost:hover:not(:disabled){background:var(--hover);border-color:transparent}
+.btn-sm{height:30px;padding:0 10px;font-size:12px;border-radius:9px}
+.btn-block{width:100%}
+.icon-btn{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;color:var(--text-2);transition:background .15s,color .15s;flex:none}
+.icon-btn:hover:not(:disabled){background:var(--hover);color:var(--text)}
+.icon-btn.on{color:var(--accent-strong);background:var(--accent-soft)}
+.input,.select,textarea.input{width:100%;height:38px;padding:0 12px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface-2);outline:0;transition:border-color .15s,box-shadow .15s}
+textarea.input{height:auto;min-height:120px;padding:10px 12px;resize:vertical;line-height:1.5}
+.input:focus,.select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.select{appearance:none;padding-right:30px;background-image:linear-gradient(45deg,transparent 50%,var(--text-2) 50%),linear-gradient(135deg,var(--text-2) 50%,transparent 50%);background-position:calc(100% - 15px) 16px,calc(100% - 10px) 16px;background-size:5px 5px;background-repeat:no-repeat}
+.chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--border);background:transparent;font-size:12px;font-weight:500;color:var(--text-2);transition:.15s}
+.chip:hover{color:var(--text);border-color:var(--border-strong)}
+.chip[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-strong);border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+.seg{display:inline-flex;padding:3px;border-radius:11px;background:var(--surface-2);border:1px solid var(--border)}
+.seg button{height:28px;min-width:30px;padding:0 8px;border-radius:8px;color:var(--text-2);display:grid;place-items:center}
+.seg button[aria-pressed="true"]{background:var(--surface-3);color:var(--text);box-shadow:var(--shadow-sm)}
+.badge{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 7px;border-radius:999px;font-size:11px;font-weight:600;background:var(--surface-3);color:var(--text-2);white-space:nowrap}
+.badge.warn{background:color-mix(in srgb,var(--warning) 16%,transparent);color:var(--warning);font-variant-numeric:tabular-nums}
+.badge.ok{background:color-mix(in srgb,var(--success) 16%,transparent);color:var(--success)}
+.switch{position:relative;width:38px;height:22px;flex:none}
+.switch input{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:1}
+.switch span{position:absolute;inset:0;border-radius:99px;background:var(--surface-3);border:1px solid var(--border-strong);transition:.2s}
+.switch span::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--text-2);transition:.2s var(--ease)}
+.switch input:checked+span{background:var(--accent);border-color:transparent}
+.switch input:checked+span::after{transform:translateX(16px);background:#fff}
+.switch input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+
+/* file kind icon */
+.ficon{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;flex:none;color:var(--k,var(--k-other));background:color-mix(in srgb,var(--k,var(--k-other)) 14%,transparent)}
+.ficon .ic{width:16px;height:16px}
+[data-kind=folder]{--k:var(--k-folder)}[data-kind=image]{--k:var(--k-image)}[data-kind=video]{--k:var(--k-video)}[data-kind=audio]{--k:var(--k-audio)}[data-kind=pdf]{--k:var(--k-pdf)}[data-kind=code],[data-kind=html],[data-kind=markdown],[data-kind=text]{--k:var(--k-code)}[data-kind=doc]{--k:var(--k-doc)}[data-kind=sheet]{--k:var(--k-sheet)}[data-kind=slides]{--k:var(--k-slides)}[data-kind=pad]{--k:var(--k-pad)}
+
+/* ============ LAYOUT ============ */
+.app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;height:100dvh}
+.sidebar{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--border);background:var(--surface);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:30}
+.brand{display:flex;align-items:center;gap:10px;padding:16px 16px 10px}
+.brand img{width:30px;height:30px;border-radius:9px;object-fit:cover;background:var(--surface-3)}
+.brand b{font-size:15px;font-weight:650;letter-spacing:-.01em}
+.brand small{display:block;font-size:11px;color:var(--text-3)}
+.side-search{position:relative;margin:4px 12px 8px}
+.side-search .ic{position:absolute;left:11px;top:10px;color:var(--text-3)}
+.side-search .input{padding-left:34px;padding-right:58px}
+.side-search .kbd{position:absolute;right:9px;top:9px}
+.side-search .clear{position:absolute;right:6px;top:3px}
+.side-scroll{flex:1;overflow:auto;padding:4px 8px 12px;min-height:0}
+.side-label{display:flex;align-items:center;justify-content:space-between;padding:14px 8px 6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.row{display:flex;align-items:center;gap:8px;width:100%;min-height:34px;padding:3px 8px;padding-left:calc(8px + var(--depth,0) * 14px);border-radius:9px;color:var(--text-2);text-align:left;font-size:13px;transition:background .12s,color .12s;position:relative}
+.row:hover{background:var(--hover);color:var(--text)}
+.row.active{background:var(--accent-soft);color:var(--text)}
+.row.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--accent)}
+.row .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .ficon{width:24px;height:24px;border-radius:7px}
+.row .ficon .ic{width:14px;height:14px}
+.row .chev{width:14px;height:14px;color:var(--text-3);transition:transform .15s var(--ease)}
+.row[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.row .spacer{width:14px;flex:none}
+.row .meta{font-size:11px;color:var(--text-3)}
+.row .star{color:var(--warning);width:13px;height:13px;fill:currentColor}
+.row mark{background:var(--accent-soft);color:var(--accent-strong);border-radius:3px}
+.result-path{display:block;font-size:11px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.side-footer{padding:12px;border-top:1px solid var(--border);display:grid;gap:8px}
+.side-footer .tools{display:flex;align-items:center;gap:2px}
+.side-footer .tools .grow{flex:1}
+.admin-pill{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:99px;background:color-mix(in srgb,var(--success) 14%,transparent);color:var(--success);font-size:11px;font-weight:600}
+.empty-mini{padding:10px;font-size:12px;color:var(--text-3)}
+.skel{height:30px;margin:4px 0;border-radius:9px;background:linear-gradient(90deg,var(--hover),var(--press),var(--hover));background-size:200% 100%;animation:shimmer 1.2s infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.topbar{display:flex;align-items:center;gap:6px;height:52px;padding:0 10px;border-bottom:1px solid var(--border);background:var(--surface);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.menu-btn{display:none}
+.tabs{display:flex;align-items:center;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;height:100%}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:flex;align-items:center;gap:7px;height:34px;max-width:220px;padding:0 6px 0 10px;border-radius:10px;font-size:13px;color:var(--text-2);flex:none;border:1px solid transparent}
+.tab:hover{background:var(--hover);color:var(--text)}
+.tab[aria-selected="true"]{background:var(--surface-2);color:var(--text);border-color:var(--border)}
+.tab .tname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tab .x{display:grid;place-items:center;width:22px;height:22px;border-radius:6px;color:var(--text-3)}
+.tab .x:hover{background:var(--press);color:var(--text)}
+.tab .dirty{width:7px;height:7px;border-radius:50%;background:var(--warning);flex:none}
+.tab.hometab{padding:0 12px}
+.status{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-3);padding:0 6px;white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px color-mix(in srgb,var(--success) 20%,transparent)}
+.dot.busy{background:var(--accent);animation:pulse 1s infinite}
+.dot.err{background:var(--danger);box-shadow:0 0 0 3px var(--danger-soft)}
+@keyframes pulse{50%{opacity:.35}}
+.palette-btn{display:flex;align-items:center;gap:8px;height:34px;padding:0 8px 0 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);font-size:12px}
+.palette-btn:hover{color:var(--text);border-color:var(--border-strong)}
+.view{flex:1;min-height:0;overflow:auto}
+.scrim{display:none}
+
+/* ============ HOME ============ */
+.home{max-width:1240px;margin:0 auto;padding:28px 28px 60px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:26px}
+.hero h1{font-size:30px;font-weight:700;letter-spacing:-.025em;line-height:1.1}
+.hero p{margin-top:6px;color:var(--text-2)}
+.hero .actions{display:flex;gap:8px;flex-wrap:wrap}
+.section{margin-top:26px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.section-head h2{font-size:14px;font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--surface);text-align:left;min-width:0;transition:border-color .15s,transform .15s,background .15s}
+.card:hover{border-color:var(--border-strong);background:var(--surface-2);transform:translateY(-1px)}
+.card .ficon{width:36px;height:36px;border-radius:10px}
+.card .t{min-width:0;flex:1}
+.card .t b{display:block;font-weight:550;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card .t span{font-size:11px;color:var(--text-3)}
+.browser-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);margin-bottom:12px}
+.crumbs{display:flex;align-items:center;gap:2px;flex:1;min-width:160px;flex-wrap:wrap}
+.crumbs button{height:28px;padding:0 8px;border-radius:8px;font-weight:550;color:var(--text-2);font-size:13px}
+.crumbs button:hover{background:var(--hover);color:var(--text)}
+.crumbs button:last-child{color:var(--text)}
+.crumbs .ic{width:14px;height:14px;color:var(--text-3)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:12px}
+.tile{position:relative;display:flex;flex-direction:column;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--surface);overflow:hidden;text-align:left;transition:border-color .15s,transform .15s,box-shadow .15s}
+.tile:hover{border-color:var(--border-strong);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.tile .thumb{aspect-ratio:4/3;display:grid;place-items:center;background:color-mix(in srgb,var(--k,var(--k-other)) 9%,var(--surface-2));overflow:hidden}
+.tile .thumb img{width:100%;height:100%;object-fit:cover}
+.tile .thumb .ficon{width:52px;height:52px;border-radius:14px;background:transparent}
+.tile .thumb .ficon .ic{width:30px;height:30px;stroke-width:1.5}
+.tile .info{padding:10px 12px 12px}
+.tile .info b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:550;font-size:13px;line-height:1.35;overflow-wrap:anywhere}
+.tile .info span{display:block;margin-top:4px;font-size:11px;color:var(--text-3)}
+.tile .tags{position:absolute;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;pointer-events:none}
+.tile .more{position:absolute;top:6px;right:6px;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--surface-solid);border:1px solid var(--border);opacity:0;transition:opacity .15s;color:var(--text-2)}
+.tile:hover .more,.tile:focus-within .more{opacity:1}
+.list{border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:var(--surface)}
+.lrow{display:grid;grid-template-columns:minmax(0,1fr) 150px 90px 40px;align-items:center;gap:10px;width:100%;padding:8px 12px;border-top:1px solid var(--border);text-align:left;font-size:13px}
+.lrow:first-child{border-top:0}
+.lrow:hover{background:var(--hover)}
+.lrow .n{display:flex;align-items:center;gap:10px;min-width:0}
+.lrow .n span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lrow .c{color:var(--text-3);font-size:12px}
+.lrow.head{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);background:var(--surface-2)}
+.lrow.head:hover{background:var(--surface-2)}
+.empty{display:grid;place-items:center;gap:10px;padding:56px 20px;text-align:center;color:var(--text-2);border:1px dashed var(--border-strong);border-radius:var(--r-lg)}
+.empty .ic{width:34px;height:34px;color:var(--text-3)}
+.empty b{color:var(--text);font-size:15px}
+
+/* ============ VIEWER ============ */
+.fileview{display:flex;flex-direction:column;height:100%}
+.vbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);min-height:52px;flex-wrap:wrap}
+.vtitle{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.vtitle .t{min-width:0}
+.vtitle b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vtitle span{display:block;font-size:11px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vactions{display:flex;align-items:center;gap:2px;flex-wrap:wrap}
+.vsep{width:1px;height:22px;background:var(--border);margin:0 4px}
+.zoomgrp{display:flex;align-items:center;border:1px solid var(--border);border-radius:10px;background:var(--surface-2)}
+.zoomgrp .icon-btn{width:32px;height:32px}
+.zoomgrp span{min-width:44px;text-align:center;font-size:12px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.vbody{flex:1;min-height:0;position:relative;overflow:auto;background:var(--surface-solid)}
+.vbody.dark-stage{background:#050507}
+.zoomlayer{transform-origin:0 0;width:100%;height:100%}
+.vbody iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+.imgstage{min-height:100%;display:grid;place-items:center;padding:24px;background-image:linear-gradient(45deg,var(--hover) 25%,transparent 25%,transparent 75%,var(--hover) 75%),linear-gradient(45deg,var(--hover) 25%,transparent 25%,transparent 75%,var(--hover) 75%);background-size:24px 24px;background-position:0 0,12px 12px}
+.imgstage img{max-width:100%;max-height:calc(100dvh - 160px);border-radius:8px;box-shadow:var(--shadow);transition:transform .2s var(--ease)}
+.mediastage{min-height:100%;display:grid;place-items:center;padding:24px}
+.mediacard{width:min(900px,100%);display:grid;gap:14px}
+.mediacard video,.mediacard audio{width:100%;border-radius:14px;background:#000}
+.speed{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--text-2)}
+.prose{max-width:820px;margin:0 auto;padding:40px 32px 80px;font-size:15px;line-height:1.7}
+.prose h1,.prose h2,.prose h3{line-height:1.25;margin:1.6em 0 .6em;letter-spacing:-.015em}
+.prose h1{font-size:2em}.prose h2{font-size:1.5em;padding-bottom:.3em;border-bottom:1px solid var(--border)}.prose h3{font-size:1.2em}
+.prose p,.prose ul,.prose ol,.prose pre,.prose blockquote,.prose table{margin:0 0 1em}
+.prose ul,.prose ol{padding-left:1.5em}
+.prose code{font:.88em var(--mono);padding:.15em .4em;border-radius:6px;background:var(--surface-3)}
+.prose pre{padding:14px 16px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);overflow:auto}
+.prose pre code{padding:0;background:none}
+.prose blockquote{padding-left:14px;border-left:3px solid var(--accent);color:var(--text-2)}
+.prose img{max-width:100%;border-radius:10px}
+.prose table{border-collapse:collapse;display:block;overflow:auto}
+.prose th,.prose td{padding:6px 12px;border:1px solid var(--border)}
+.code-wrap{font:13px/1.65 var(--mono);padding:16px 0;min-height:100%}
+.code-wrap pre{margin:0;counter-reset:ln;tab-size:2}
+.code-wrap .ln{display:block;padding:0 20px 0 64px;position:relative;white-space:pre}
+.code-wrap.wrap .ln{white-space:pre-wrap;overflow-wrap:anywhere}
+.code-wrap .ln::before{counter-increment:ln;content:counter(ln);position:absolute;left:0;width:48px;text-align:right;color:var(--text-3);user-select:none}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--text-3);font-style:italic}
+.token.punctuation{color:var(--text-2)}
+.token.property,.token.tag,.token.boolean,.token.number,.token.constant,.token.symbol,.token.deleted{color:#f472b6}
+.token.selector,.token.attr-name,.token.string,.token.char,.token.builtin,.token.inserted{color:#4ade9b}
+.token.operator,.token.entity,.token.url{color:#38bdf8}
+.token.atrule,.token.attr-value,.token.keyword{color:var(--accent-strong)}
+.token.function,.token.class-name{color:#fbbf24}
+.token.regex,.token.important,.token.variable{color:#fb923c}
+:root[data-theme="light"] .token.string,:root[data-theme="light"] .token.attr-name{color:#047857}
+:root[data-theme="light"] .token.function{color:#b45309}
+.editor{display:flex;flex-direction:column;height:100%}
+.editor textarea{flex:1;width:100%;border:0;outline:0;resize:none;padding:22px 26px;background:transparent;font:14px/1.7 var(--mono);tab-size:2}
+.editor-foot{display:flex;align-items:center;gap:12px;padding:6px 14px;border-top:1px solid var(--border);font-size:11px;color:var(--text-3);background:var(--surface)}
+.editor-foot .grow{flex:1}
+.lockscreen{height:100%;display:grid;place-items:center;padding:24px}
+.lockcard{width:min(380px,100%);display:grid;gap:12px;text-align:center;padding:28px;border-radius:var(--r-xl);border:1px solid var(--border);background:var(--surface)}
+.lockcard .ic{width:36px;height:36px;margin:0 auto;color:var(--accent)}
+.loading{height:100%;display:grid;place-items:center;color:var(--text-3)}
+.spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--border-strong);border-top-color:var(--accent);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============ OVERLAYS ============ */
+.modal-backdrop{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:16px;background:var(--scrim);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .18s}
+.modal-backdrop.open{opacity:1}
+.modal-backdrop.top{align-items:start;padding-top:12vh}
+.modal-card{width:min(460px,100%);max-height:calc(100dvh - 32px);overflow:auto;padding:22px;border-radius:var(--r-xl);border:1px solid var(--border-strong);background:var(--surface-solid);box-shadow:var(--shadow);transform:translateY(8px) scale(.985);transition:transform .2s var(--ease)}
+.modal-backdrop.open .modal-card{transform:none}
+.modal-card.wide{width:min(640px,100%)}
+.modal-card.xl{width:min(1100px,100%);height:min(820px,calc(100dvh - 32px));padding:0;display:flex;flex-direction:column}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.modal-title{font-size:17px;font-weight:650;letter-spacing:-.01em}
+.modal-copy{color:var(--text-2);font-size:13px;margin-bottom:14px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap}
+.field{display:grid;gap:6px;margin-top:12px}
+.field>label,.field>.lbl{font-size:12px;font-weight:550;color:var(--text-2)}
+.field .hint{font-size:11px;color:var(--text-3)}
+.form-error{min-height:18px;margin-top:10px;font-size:12px;color:var(--danger)}
+.check{display:flex;align-items:center;gap:10px;font-size:13px}
+.menu{position:fixed;z-index:200;min-width:200px;padding:6px;border-radius:14px;border:1px solid var(--border-strong);background:var(--surface-solid);box-shadow:var(--shadow)}
+.menu button{display:flex;align-items:center;gap:10px;width:100%;height:34px;padding:0 10px;border-radius:9px;font-size:13px;text-align:left;color:var(--text)}
+.menu button:hover,.menu button:focus-visible{background:var(--hover);outline:0}
+.menu button.danger{color:var(--danger)}
+.menu hr{border:0;border-top:1px solid var(--border);margin:5px 4px}
+.menu .ic{color:var(--text-2)}
+.toasts{position:fixed;right:16px;bottom:16px;z-index:300;display:grid;gap:8px;justify-items:end;pointer-events:none}
+.toast{display:flex;align-items:center;gap:10px;max-width:min(420px,calc(100vw - 32px));padding:11px 12px 11px 14px;border-radius:14px;border:1px solid var(--border-strong);background:var(--surface-solid);box-shadow:var(--shadow);font-size:13px;pointer-events:auto;animation:tin .22s var(--ease)}
+.toast .ic{color:var(--accent)}
+.toast.success .ic{color:var(--success)}.toast.error .ic{color:var(--danger)}
+.toast button{font-weight:600;color:var(--accent-strong);padding:4px 6px;border-radius:6px}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:90;width:min(360px,100vw);padding:20px;overflow:auto;background:var(--surface-solid);border-left:1px solid var(--border-strong);box-shadow:var(--shadow);transform:translateX(100%);transition:transform .25s var(--ease)}
+.drawer.open{transform:none}
+.kv{display:grid;grid-template-columns:96px 1fr;gap:10px 12px;font-size:13px;margin-top:16px}
+.kv dt{color:var(--text-3)}.kv dd{overflow-wrap:anywhere}
+.dropzone{display:grid;place-items:center;gap:8px;padding:26px 16px;border:1.5px dashed var(--border-strong);border-radius:var(--r-lg);text-align:center;color:var(--text-2);cursor:pointer;transition:.15s}
+.dropzone:hover,.dropzone.over{border-color:var(--accent);background:var(--accent-soft);color:var(--text)}
+.dropzone .ic{width:28px;height:28px;color:var(--accent)}
+.queue{display:grid;gap:4px;max-height:180px;overflow:auto;margin-top:10px}
+.qrow{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:9px;background:var(--surface-2);font-size:12px}
+.qrow .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.folderpick{max-height:170px;overflow:auto;border:1px solid var(--border);border-radius:var(--r-md);padding:4px;margin-top:6px}
+.folderpick button{display:flex;align-items:center;gap:8px;width:100%;min-height:32px;padding:4px 8px;border-radius:8px;font-size:12px;text-align:left;color:var(--text-2)}
+.folderpick button:hover{background:var(--hover);color:var(--text)}
+.folderpick button[aria-pressed="true"]{background:var(--accent-soft);color:var(--text)}
+.expiry{padding:12px;border:1px solid var(--border);border-radius:var(--r-md);margin-top:12px;display:grid;gap:10px}
+.expiry .opts{display:grid;gap:8px;font-size:13px}
+.expiry .opts label{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.expiry input[type=number]{width:90px}
+.expiry input[type=datetime-local]{width:auto}
+.tray{position:fixed;left:16px;bottom:16px;z-index:250;width:min(360px,calc(100vw - 32px));border-radius:var(--r-lg);border:1px solid var(--border-strong);background:var(--surface-solid);box-shadow:var(--shadow);overflow:hidden}
+.tray-head{display:flex;align-items:center;gap:10px;padding:12px 12px 10px 14px;font-size:13px;font-weight:600}
+.tray-head .grow{flex:1}
+.bar{height:4px;border-radius:4px;background:var(--surface-3);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.bar.indet i{width:35%;animation:indet 1.1s infinite ease-in-out}
+@keyframes indet{from{transform:translateX(-100%)}to{transform:translateX(300%)}}
+.tray-list{max-height:220px;overflow:auto;padding:0 14px 12px;display:grid;gap:10px}
+.titem{font-size:12px;display:grid;gap:5px}
+.titem .r{display:flex;gap:8px;align-items:center}
+.titem .r .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.titem.done .bar i{background:var(--success);width:100%}
+.titem.fail{color:var(--danger)}
+.dropall{position:fixed;inset:0;z-index:400;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(6px);pointer-events:none;opacity:0;transition:opacity .15s}
+.dropall.show{opacity:1}
+.dropall div{padding:40px 56px;border:2px dashed var(--accent);border-radius:28px;background:var(--surface-solid);text-align:center;box-shadow:var(--shadow)}
+.dropall .ic{width:40px;height:40px;color:var(--accent);margin-bottom:8px}
+.palette{width:min(620px,100%);padding:0;overflow:hidden}
+.palette .pin{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.palette .pin input{flex:1;border:0;outline:0;background:transparent;font-size:16px}
+.palette .plist{max-height:min(420px,60dvh);overflow:auto;padding:6px}
+.palette .pgroup{padding:8px 10px 4px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3)}
+.palette .pitem{display:flex;align-items:center;gap:10px;width:100%;min-height:42px;padding:6px 10px;border-radius:10px;text-align:left}
+.palette .pitem[aria-selected="true"]{background:var(--accent-soft)}
+.palette .pitem .t{flex:1;min-width:0}
+.palette .pitem b{display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.palette .pitem span{display:block;font-size:11px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.palette .pfoot{display:flex;gap:14px;padding:8px 14px;border-top:1px solid var(--border);font-size:11px;color:var(--text-3)}
+.shortcuts{display:grid;grid-template-columns:1fr auto;gap:10px 18px;font-size:13px;margin-top:10px}
+.debug{position:fixed;left:16px;bottom:16px;z-index:500;width:min(520px,calc(100vw - 32px));max-height:260px;overflow:auto;padding:12px;border-radius:12px;background:#07070b;color:#cbd5e1;border:1px solid var(--border-strong);font:11px/1.5 var(--mono);white-space:pre-wrap}
+
+/* ============ ADMIN ============ */
+.adm{display:grid;grid-template-columns:210px 1fr;flex:1;min-height:0}
+.adm-nav{padding:14px 10px;border-right:1px solid var(--border);display:grid;align-content:start;gap:2px;background:var(--surface-2)}
+.adm-nav .row{padding-left:10px}
+.adm-main{min-height:0;overflow:auto;padding:20px 22px 30px}
+.adm-head{display:flex;align-items:center;gap:12px;padding:14px 16px 14px 20px;border-bottom:1px solid var(--border)}
+.adm-head h2{font-size:16px;font-weight:650;flex:1}
+.adm-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.adm-toolbar .input,.adm-toolbar .select{height:34px;width:auto}
+.adm-toolbar .input{flex:1;min-width:180px}
+.selbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;margin-bottom:10px;border-radius:12px;background:var(--accent-soft);font-size:13px}
+.arow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);margin-bottom:6px}
+.arow .t{min-width:0}
+.arow .t b{display:block;font-weight:550;overflow-wrap:anywhere}
+.arow .t span{display:block;font-size:11px;color:var(--text-3);overflow-wrap:anywhere}
+.arow .acts{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.arow input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent)}
+.arow details{grid-column:1/-1;font-size:12px;color:var(--text-2)}
+.arow summary{cursor:pointer;color:var(--text-3)}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:18px}
+.stat{padding:14px;border-radius:14px;border:1px solid var(--border);background:var(--surface)}
+.stat span{font-size:12px;color:var(--text-3)}
+.stat b{display:block;font-size:20px;margin-top:4px;letter-spacing:-.01em}
+.panel{padding:16px;border-radius:14px;border:1px solid var(--border);background:var(--surface);margin-bottom:12px}
+.panel h3{font-size:14px;margin-bottom:4px}
+.panel p{font-size:13px;color:var(--text-2);margin-bottom:12px}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;inset:0 auto 0 0;width:min(320px,88vw);transform:translateX(-100%);transition:transform .25s var(--ease);background:var(--surface-solid)}
+  .sidebar.open{transform:none;box-shadow:var(--shadow)}
+  .scrim{display:block;position:fixed;inset:0;z-index:25;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .2s}
+  .scrim.open{opacity:1;pointer-events:auto}
+  .menu-btn{display:inline-grid}
+  .status .txt,.palette-btn .lbl,.palette-btn .kbd{display:none}
+  .home{padding:20px 16px 60px}
+  .hero h1{font-size:24px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+  .lrow{grid-template-columns:minmax(0,1fr) 70px 40px}
+  .lrow .c.d{display:none}
+  .adm{grid-template-columns:1fr}
+  .adm-nav{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--border);padding:8px}
+  .adm-nav .row{width:auto;flex:none}
+  .adm-main{padding:14px}
+  .arow{grid-template-columns:auto minmax(0,1fr)}
+  .arow .acts{grid-column:1/-1;justify-content:flex-start}
+  .vbar .hide-sm{display:none}
+  .icon-btn{width:40px;height:40px}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v12h14V9"/><path d="M10 21v-6h4v6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-folder-plus" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 10v6M9 13h6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></symbol>
+  <symbol id="i-text" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="2" y="5" width="15" height="14" rx="3"/><path d="m22 8-5 4 5 4z"/></symbol>
+  <symbol id="i-audio" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></symbol>
+  <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M3 15h18M9 3v18"/></symbol>
+  <symbol id="i-slides" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-pad" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M7 15h10"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></symbol>
+  <symbol id="i-max" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-unlock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.8-1.3"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
+  <symbol id="i-restore" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-move" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 13h6M13 10l3 3-3 3"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-wrap" viewBox="0 0 24 24"><path d="M3 6h18M3 12h15a3 3 0 0 1 0 6h-4M16 16l-2 2 2 2M3 18h7"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Workspace">
+    <div class="brand">
+      <img src="https://ik.imagekit.io/22h7wv5o2/b___Ultra_Detailed_Ima.png?updatedAt=1778874059723" alt="">
+      <div><b>Drive Workspace</b><small id="brand-sub">Loading…</small></div>
+    </div>
+    <div class="side-search">
+      <svg class="ic ic-sm"><use href="#i-search"/></svg>
+      <input id="side-search" class="input" type="search" placeholder="Filter files" aria-label="Filter files and pads" autocomplete="off">
+      <span class="kbd" id="side-kbd">/</span>
+      <button class="icon-btn clear" id="side-clear" type="button" aria-label="Clear filter" hidden style="width:32px;height:32px"><svg class="ic ic-sm"><use href="#i-x"/></svg></button>
+    </div>
+    <nav class="side-scroll" id="side-scroll">
+      <button class="row" id="nav-home" type="button"><span class="ficon" data-kind="folder" style="--k:var(--accent)"><svg class="ic"><use href="#i-home"/></svg></span><span class="name">Home</span></button>
+      <div id="side-results" hidden></div>
+      <div id="side-browse">
+        <div class="side-label"><span>Pads</span><span id="pad-count"></span></div>
+        <div id="pad-list"><div class="skel"></div></div>
+        <div class="side-label"><span>Files</span><button class="icon-btn" id="collapse-all" type="button" title="Collapse all folders" aria-label="Collapse all folders" style="width:24px;height:24px"><svg class="ic ic-sm"><use href="#i-minus"/></svg></button></div>
+        <div id="tree" role="tree" aria-label="Files"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+      </div>
+    </nav>
+    <div class="side-footer">
+      <button class="btn btn-primary btn-block" id="upload-btn" type="button"><svg class="ic"><use href="#i-upload"/></svg>Upload</button>
+      <div class="tools">
+        <button class="icon-btn" id="theme-btn" type="button" aria-label="Toggle theme" title="Toggle theme"><svg class="ic"><use href="#i-moon"/></svg></button>
+        <button class="icon-btn" id="keys-btn" type="button" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)"><svg class="ic"><use href="#i-keyboard"/></svg></button>
+        <span class="grow"></span>
+        <span class="admin-pill" id="admin-pill" hidden><svg class="ic ic-sm"><use href="#i-shield"/></svg>Admin</span>
+        <button class="icon-btn" id="admin-btn" type="button" aria-label="Admin" title="Admin (Ctrl+Shift+A)"><svg class="ic"><use href="#i-shield"/></svg></button>
+      </div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open file list"><svg class="ic"><use href="#i-menu"/></svg></button>
+      <div class="tabs" id="tabs" role="tablist" aria-label="Open files"></div>
+      <div class="status" id="status" role="status"><span class="dot busy" id="status-dot"></span><span class="txt" id="status-txt">Connecting…</span></div>
+      <button class="icon-btn" id="refresh-btn" type="button" aria-label="Refresh" title="Refresh (R)"><svg class="ic"><use href="#i-refresh"/></svg></button>
+      <button class="palette-btn" id="palette-btn" type="button" aria-label="Search everything"><svg class="ic ic-sm"><use href="#i-search"/></svg><span class="lbl">Search</span><span class="kbd">Ctrl K</span></button>
+    </header>
+    <section class="view" id="view"></section>
+  </main>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="dropall" id="dropall"><div><svg class="ic"><use href="#i-upload"/></svg><b style="display:block;font-size:17px">Drop to upload</b><span class="muted tiny" id="dropall-dest"></span></div></div>
+
+<script>
+(() => {
+'use strict';
+
+/* =====================================================================
+   CONFIG
+   ===================================================================== */
+const CONFIG = {
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwL5aktIz2OfoDs39r41wx-ruBt-Wx0M3tO-9FRhuVvnb7EffEIJK_ojbMbBJNLIzsvzg/exec',
+  ROOT_FOLDER_ID: '1ztsTJCXPBFzIYeOLSyZkZebjlTYyB1JK',
+  DIRECT_UPLOAD_MAX: 10 * 1024 * 1024,
+  CHUNK_SIZE: 8 * 1024 * 1024,           // must be a multiple of 256 KB
+  POLL_MS: 60000,
+  ADMIN_IDLE_MS: 10 * 60 * 1000
+};
+
+/* =====================================================================
+   UTILITIES
+   ===================================================================== */
+const $ = (s, r = document) => r.querySelector(s);
+const SVG_NS = 'http://www.w3.org/2000/svg';
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  if (props) for (const [k, v] of Object.entries(props)) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'text') el.textContent = v;
+    else if (k === 'style' && typeof v === 'object') for (const [sk, sv] of Object.entries(v)) el.style.setProperty(sk, sv);
+    else if (k === 'dataset') Object.assign(el.dataset, v);
+    else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (k === 'value') el.value = v;
+    else if (k === 'checked') el.checked = v;
+    else if (v === true) el.setAttribute(k, '');
+    else el.setAttribute(k, String(v));
+  }
+  for (const kid of kids.flat(Infinity)) {
+    if (kid == null || kid === false) continue;
+    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  }
+  return el;
+}
+function icon(name, cls = '') {
+  const s = document.createElementNS(SVG_NS, 'svg');
+  s.setAttribute('class', 'ic ' + cls); s.setAttribute('aria-hidden', 'true');
+  const u = document.createElementNS(SVG_NS, 'use'); u.setAttribute('href', '#i-' + name);
+  s.append(u); return s;
+}
+function ibtn(name, label, onclick, extra = {}) {
+  return h('button', Object.assign({class: 'icon-btn', type: 'button', 'aria-label': label, title: label, onclick}, extra), icon(name));
+}
+const store = {
+  get(k, fb) { try { const v = localStorage.getItem(k); return v == null ? fb : JSON.parse(v); } catch { return fb; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } },
+  del(k) { try { localStorage.removeItem(k); } catch {} }
+};
+const fmt = {
+  size(n) {
+    n = Number(n);
+    if (!isFinite(n) || n <= 0) return '—';
+    const u = ['B', 'KB', 'MB', 'GB', 'TB']; let i = 0;
+    while (n >= 1024 && i < u.length - 1) { n /= 1024; i++; }
+    return (i ? n.toFixed(n >= 10 ? 0 : 1) : n) + ' ' + u[i];
+  },
+  date(iso) { const d = new Date(iso); return isNaN(d) ? '—' : d.toLocaleDateString(undefined, {day: 'numeric', month: 'short', year: 'numeric'}); },
+  datetime(v) { const d = new Date(v); return isNaN(d) ? '—' : d.toLocaleString(); },
+  ago(v) {
+    const d = new Date(v); if (isNaN(d)) return '';
+    const s = Math.round((Date.now() - d) / 1000);
+    if (s < 45) return 'just now';
+    if (s < 3600) return Math.round(s / 60) + ' min ago';
+    if (s < 86400) return Math.round(s / 3600) + ' h ago';
+    if (s < 86400 * 7) return Math.round(s / 86400) + ' d ago';
+    return fmt.date(v);
+  },
+  left(at) {
+    const s = Math.max(0, Math.ceil((at - Date.now()) / 1000));
+    if (!s) return 'Deleting…';
+    const d = Math.floor(s / 86400), hh = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60;
+    if (d) return `${d}d ${hh}h left`;
+    if (hh) return `${hh}h ${String(m).padStart(2, '0')}m left`;
+    return `${m}:${String(ss).padStart(2, '0')} left`;
+  }
+};
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36));
+const scripts = {};
+function loadScript(src) {
+  return scripts[src] || (scripts[src] = new Promise((res, rej) => {
+    const s = h('script', {src}); s.onload = res; s.onerror = () => { delete scripts[src]; rej(new Error('Could not load ' + src)); };
+    document.head.append(s);
+  }));
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); }
+  catch { const t = h('textarea', {value: text, style: {position: 'fixed', opacity: '0'}}); document.body.append(t); t.select(); document.execCommand('copy'); t.remove(); }
+  toast('Link copied', 'success');
+}
+function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function highlight(text, query) {
+  const frag = document.createDocumentFragment();
+  const terms = query.trim().split(/\s+/).filter(Boolean);
+  if (!terms.length) { frag.append(text); return frag; }
+  const re = new RegExp('(' + terms.map(escapeRe).join('|') + ')', 'ig');
+  text.split(re).forEach((part, i) => frag.append(i % 2 ? h('mark', {text: part}) : part));
+  return frag;
+}
+
+/* debug log (Ctrl+Shift+D) */
+const logs = [];
+function debug(msg, err) {
+  const line = `${new Date().toLocaleTimeString()}  ${msg}${err ? '\n  ' + (err.stack || err.message || err) : ''}`;
+  logs.unshift(line); logs.length = Math.min(logs.length, 80);
+  console[err ? 'error' : 'log'](msg, err || '');
+  const p = $('#debug'); if (p) p.textContent = logs.join('\n');
+}
+
+/* =====================================================================
+   TOASTS · MODALS · DIALOGS · MENUS
+   ===================================================================== */
+function toast(message, type = 'info', opts = {}) {
+  const ic = type === 'success' ? 'check' : type === 'error' ? 'alert' : 'info';
+  const t = h('div', {class: 'toast ' + type, role: type === 'error' ? 'alert' : 'status'}, icon(ic), h('span', {style: {flex: '1'}, text: message}));
+  if (opts.action) t.append(h('button', {type: 'button', text: opts.action.label, onclick: () => { t.remove(); opts.action.run(); }}));
+  t.append(h('button', {type: 'button', 'aria-label': 'Dismiss', onclick: () => t.remove()}, icon('x', 'ic-sm')));
+  $('#toasts').append(t);
+  setTimeout(() => t.remove(), opts.timeout || (type === 'error' ? 7000 : 3500));
+}
+
+const modals = [];
+function openModal(card, {onClose, top = false} = {}) {
+  const back = h('div', {class: 'modal-backdrop' + (top ? ' top' : '')}, card);
+  const prev = document.activeElement;
+  const entry = {
+    card, back, closed: false,
+    close(silent) {
+      if (entry.closed) return; entry.closed = true;
+      modals.splice(modals.indexOf(entry), 1);
+      back.classList.remove('open'); setTimeout(() => back.remove(), 180);
+      if (!silent && onClose) onClose();
+      if (prev && prev.focus && document.contains(prev)) prev.focus();
+    }
+  };
+  back.addEventListener('mousedown', e => { if (e.target === back) entry.close(); });
+  document.body.append(back); modals.push(entry);
+  requestAnimationFrame(() => back.classList.add('open'));
+  setTimeout(() => { const f = card.querySelector('[autofocus],input:not([type=checkbox]):not([type=radio]),textarea,select,button.btn-primary,button'); f && f.focus(); }, 30);
+  return entry;
+}
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Tab' || !modals.length) return;
+  const card = modals[modals.length - 1].card;
+  const f = [...card.querySelectorAll('button,input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(el => !el.disabled && el.offsetParent !== null);
+  if (!f.length) return;
+  if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+});
+
+/** Generic dialog. fields: [{name,label,type,value,placeholder,hint,options,required}] → values object, true (no fields) or null. */
+function dialog({title, message, fields = [], confirmText = 'OK', cancelText = 'Cancel', danger = false, validate}) {
+  return new Promise(resolve => {
+    const idT = 'dlg' + Math.random().toString(36).slice(2);
+    const controls = {};
+    const form = h('form', {novalidate: true});
+    fields.forEach(f => {
+      let c;
+      if (f.type === 'textarea') c = h('textarea', {class: 'input', name: f.name, placeholder: f.placeholder || '', value: f.value || ''});
+      else if (f.type === 'select') c = h('select', {class: 'select', name: f.name}, (f.options || []).map(o => h('option', {value: o.value, text: o.label, selected: o.value === f.value})));
+      else if (f.type === 'checkbox') c = h('input', {type: 'checkbox', name: f.name, checked: !!f.value});
+      else c = h('input', {class: 'input', name: f.name, type: f.type || 'text', placeholder: f.placeholder || '', value: f.value == null ? '' : f.value, autocomplete: f.type === 'password' ? 'current-password' : 'off', maxlength: f.max || 500});
+      if (f.autofocus) c.setAttribute('autofocus', '');
+      controls[f.name] = c;
+      form.append(f.type === 'checkbox'
+        ? h('label', {class: 'check field'}, c, f.label)
+        : h('div', {class: 'field'}, h('label', {text: f.label}), c, f.hint && h('span', {class: 'hint', text: f.hint})));
+    });
+    const err = h('p', {class: 'form-error', role: 'alert'});
+    const cancel = h('button', {class: 'btn', type: 'button', text: cancelText});
+    const ok = h('button', {class: 'btn ' + (danger ? 'btn-danger' : 'btn-primary'), type: 'submit', text: confirmText});
+    form.append(err, h('div', {class: 'modal-actions'}, cancel, ok));
+    const card = h('div', {class: 'modal-card' + (fields.some(f => f.type === 'textarea') ? ' wide' : ''), role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': idT},
+      h('h2', {class: 'modal-title', id: idT, text: title}), message && h('p', {class: 'modal-copy', text: message, style: {'margin-top': '6px'}}), form);
+    const m = openModal(card, {onClose: () => resolve(null)});
+    cancel.onclick = () => m.close();
+    form.onsubmit = e => {
+      e.preventDefault();
+      const values = {};
+      for (const f of fields) {
+        const c = controls[f.name];
+        values[f.name] = f.type === 'checkbox' ? c.checked : c.value.trim();
+        if (f.required && !values[f.name]) { err.textContent = `${f.label} is required`; c.focus(); return; }
+      }
+      const msg = validate && validate(values);
+      if (msg) { err.textContent = msg; return; }
+      m.close(true);
+      resolve(fields.length ? values : true);
+    };
+  });
+}
+const confirmDialog = opts => dialog(Object.assign({confirmText: 'Confirm'}, opts)).then(Boolean);
+
+let openMenuEl = null;
+function closeMenu() { if (openMenuEl) { openMenuEl.remove(); openMenuEl = null; } }
+function showMenu(items, x, y) {
+  closeMenu();
+  const m = h('div', {class: 'menu', role: 'menu'});
+  items.filter(Boolean).forEach(it => {
+    if (it === '-') return m.append(h('hr'));
+    m.append(h('button', {type: 'button', role: 'menuitem', class: it.danger ? 'danger' : '', onclick: () => { closeMenu(); it.run(); }}, icon(it.icon), it.label));
+  });
+  document.body.append(m); openMenuEl = m;
+  const r = m.getBoundingClientRect();
+  m.style.left = Math.max(8, Math.min(x, innerWidth - r.width - 8)) + 'px';
+  m.style.top = Math.max(8, Math.min(y, innerHeight - r.height - 8)) + 'px';
+  m.querySelector('button').focus();
+  m.addEventListener('keydown', e => {
+    const bs = [...m.querySelectorAll('button')]; const i = bs.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); bs[(i + 1) % bs.length].focus(); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); bs[(i - 1 + bs.length) % bs.length].focus(); }
+  });
+}
+document.addEventListener('mousedown', e => { if (openMenuEl && !openMenuEl.contains(e.target)) closeMenu(); });
+
+/* =====================================================================
+   API
+   ===================================================================== */
+class ApiError extends Error { constructor(msg, code, data) { super(msg); this.code = code; this.data = data || {}; } }
+const clientId = (() => { let id = store.get('dw_client_id'); if (!id) { id = uid(); store.set('dw_client_id', id); } return id; })();
+
+async function fetchJson(url, opts = {}, timeout = 60000) {
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), timeout);
+  try {
+    const res = await fetch(url, Object.assign({signal: ctl.signal, redirect: 'follow'}, opts));
+    const text = await res.text();
+    let data; try { data = JSON.parse(text); } catch { throw new ApiError('The server sent an unexpected response. Is the Apps Script deployed with "Anyone" access?', 'bad_response'); }
+    if (data && data.status === 'error') throw new ApiError(data.message || 'Request failed', data.code, data);
+    return data;
+  } catch (err) {
+    if (err.name === 'AbortError') throw new ApiError('The server took too long to answer. Please try again.', 'timeout');
+    if (err instanceof ApiError) throw err;
+    throw new ApiError('Network error — check your connection.', 'network');
+  } finally { clearTimeout(t); }
+}
+const api = {
+  get(params, timeout) { return fetchJson(CONFIG.SCRIPT_URL + '?' + new URLSearchParams(Object.assign({t: Date.now()}, params)), {}, timeout); },
+  async post(action, payload = {}, timeout = 120000) {
+    const body = Object.assign({action, clientId}, payload);
+    if (admin.valid()) body.token = admin.token;
+    try {
+      return await fetchJson(CONFIG.SCRIPT_URL, {method: 'POST', body: JSON.stringify(body)}, timeout);
+    } catch (err) {
+      if (err.code === 'auth' && action !== 'adminLogin' && admin.token) { admin.logout(true); toast('Admin session expired — please sign in again', 'error'); }
+      throw err;
+    }
+  }
+};
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const state = {
+  rootId: CONFIG.ROOT_FOLDER_ID,
+  tree: [], pads: [], version: null, loaded: false, padsError: null,
+  byId: new Map(), files: [], folders: [], totalSize: 0,
+  expanded: new Set(store.get('dw_expanded', [])),
+  favorites: new Set(store.get('drive_favorites_v1', []).map(String)),
+  recents: store.get('dw_recent', []),
+  view: store.get('drive_view_mode_v1', null) === 'list' ? 'list' : (store.get('dw_view', 'grid')),
+  sort: store.get('dw_sort', 'name'),
+  filter: 'all', favOnly: false,
+  browse: store.get('dw_browse', null),
+  query: '',
+  tabs: [], active: 'home',
+  syncAt: 0, syncing: false, syncError: false
+};
+const admin = {
+  token: null, expiresAt: 0, idleTimer: null,
+  valid() { return Boolean(this.token) && this.expiresAt > Date.now(); },
+  load() { try { const s = JSON.parse(sessionStorage.getItem('dw_admin') || 'null'); if (s && s.expiresAt > Date.now()) Object.assign(this, s); } catch {} },
+  save() { try { sessionStorage.setItem('dw_admin', JSON.stringify({token: this.token, expiresAt: this.expiresAt})); } catch {} },
+  logout(silent) {
+    this.token = null; this.expiresAt = 0;
+    try { sessionStorage.removeItem('dw_admin'); } catch {}
+    if (adminModal) { adminModal.close(true); adminModal = null; }
+    renderAdminPill();
+    if (!silent) toast('Signed out of admin');
+  },
+  touch() {
+    if (!this.valid()) return;
+    clearTimeout(this.idleTimer);
+    this.idleTimer = setTimeout(() => { this.logout(true); toast('Admin signed out after 10 minutes of inactivity'); }, CONFIG.ADMIN_IDLE_MS);
+  }
+};
+['pointerdown', 'keydown'].forEach(ev => addEventListener(ev, () => admin.touch(), {passive: true}));
+
+/* =====================================================================
+   FILE KINDS
+   ===================================================================== */
+const EXT = {
+  image: /\.(png|jpe?g|gif|webp|bmp|svg|avif|heic|ico)$/i,
+  video: /\.(mp4|webm|mov|m4v|mkv|avi|ogv)$/i,
+  audio: /\.(mp3|wav|ogg|m4a|aac|flac|opus)$/i,
+  markdown: /\.(md|markdown)$/i,
+  html: /\.html?$/i,
+  code: /\.(json|js|mjs|ts|tsx|jsx|py|sql|css|scss|c|h|cpp|hpp|cs|java|kt|go|rs|rb|php|sh|bash|ps1|xml|ya?ml|toml|ini|cfg|conf|env|gs)$/i,
+  text: /\.(txt|log|csv|tsv|editable)$/i,
+  editable: /\.editable(\.txt)?$/i
+};
+function kindOf(item) {
+  if (!item) return 'other';
+  if (item.isPad) return 'pad';
+  if (item.type === 'folder') return 'folder';
+  const m = String(item.mimeType || '').toLowerCase(), n = String(item.name || '');
+  if (EXT.editable.test(n)) return 'text';
+  if (m === 'application/pdf' || /\.pdf$/i.test(n)) return 'pdf';
+  if (m.startsWith('image/') || EXT.image.test(n)) return 'image';
+  if (m.startsWith('video/') || EXT.video.test(n)) return 'video';
+  if (m.startsWith('audio/') || EXT.audio.test(n)) return 'audio';
+  if (EXT.markdown.test(n)) return 'markdown';
+  if (EXT.html.test(n) || m === 'text/html') return 'html';
+  if (EXT.code.test(n) || /(json|javascript|xml)/.test(m)) return 'code';
+  if (EXT.text.test(n) || m.startsWith('text/')) return 'text';
+  if (/document|word|rtf|opendocument\.text/.test(m)) return 'doc';
+  if (/spreadsheet|excel|csv/.test(m)) return 'sheet';
+  if (/presentation|powerpoint/.test(m)) return 'slides';
+  return 'other';
+}
+const KIND_ICON = {folder: 'folder', pad: 'pad', image: 'image', video: 'video', audio: 'audio', pdf: 'text', markdown: 'text', html: 'code', code: 'code', text: 'text', doc: 'text', sheet: 'sheet', slides: 'slides', other: 'file'};
+const KIND_LABEL = {folder: 'Folder', pad: 'Pad', image: 'Image', video: 'Video', audio: 'Audio', pdf: 'PDF', markdown: 'Markdown', html: 'HTML', code: 'Code', text: 'Text', doc: 'Document', sheet: 'Spreadsheet', slides: 'Slides', other: 'File'};
+function ficon(item, cls = '') { const k = kindOf(item); return h('span', {class: 'ficon ' + cls, dataset: {kind: k}}, icon(KIND_ICON[k])); }
+const FILTERS = [['all', 'All'], ['document', 'Documents'], ['image', 'Images'], ['video', 'Videos'], ['audio', 'Audio'], ['pdf', 'PDFs']];
+function matchesFilter(item, f) {
+  if (f === 'all') return true;
+  const k = kindOf(item);
+  if (f === 'document') return !['image', 'video', 'audio', 'pdf', 'folder'].includes(k);
+  return k === f;
+}
+const thumbUrl = (id, w = 400) => `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w${w}`;
+const viewUrl = id => `https://drive.google.com/file/d/${encodeURIComponent(id)}/view`;
+const previewUrl = id => `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview`;
+const downloadUrl = id => `https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`;
+
+/* =====================================================================
+   DATA
+   ===================================================================== */
+function indexData() {
+  state.byId = new Map(); state.files = []; state.totalSize = 0;
+  state.folders = [{id: state.rootId, name: 'Home', path: 'Home'}];
+  const walk = (items, parentId, names, ids) => (items || []).forEach(it => {
+    it.parentId = parentId; it.path = names.length ? names.join(' / ') : 'Home'; it.pathIds = ids;
+    state.byId.set(it.id, it);
+    if (it.type === 'folder') {
+      state.folders.push({id: it.id, name: it.name, path: [...names, it.name].join(' / ')});
+      walk(it.children, it.id, [...names, it.name], [...ids, it.id]);
+    } else { state.files.push(it); state.totalSize += Number(it.size) || 0; }
+  });
+  walk(state.tree, state.rootId, [], []);
+  state.pads.forEach(p => { p.isPad = true; p.name = p.title; p.path = 'Pads'; state.byId.set('pad:' + p.id, p); });
+}
+function applyData(data, fromCache) {
+  if (!data || !Array.isArray(data.tree)) throw new ApiError('Unexpected data from the server', 'bad_response');
+  state.rootId = data.rootId || state.rootId;
+  state.tree = data.tree; state.pads = Array.isArray(data.pads) ? data.pads : [];
+  state.version = data.version; state.padsError = data.padsError || null; state.loaded = true;
+  indexData();
+  if (!fromCache) {
+    state.syncAt = Date.now();
+    const json = JSON.stringify(data);
+    if (json.length < 3e6) store.set('dw_bootstrap_v2', data);
+  }
+  renderAll();
+}
+async function refresh({silent = false} = {}) {
+  if (state.syncing) return;
+  state.syncing = true; renderStatus();
+  try {
+    applyData(await api.get({mode: 'bootstrap'}, 90000));
+    state.syncError = false;
+    if (state.padsError) toast('Pads could not load: ' + state.padsError, 'error');
+  } catch (err) {
+    state.syncError = true; debug('Refresh failed', err);
+    if (!silent) toast(err.message, 'error', {action: {label: 'Retry', run: () => refresh()}});
+    if (!state.loaded) renderView();
+  } finally { state.syncing = false; renderStatus(); }
+}
+async function pollVersion() {
+  if (document.visibilityState !== 'visible' || state.syncing || !state.loaded) return;
+  try {
+    const res = await fetch(CONFIG.SCRIPT_URL + '?mode=version&t=' + Date.now());
+    const v = (await res.text()).trim();
+    if (v && /^\d+$/.test(v) && v !== String(state.version)) refresh({silent: true});
+  } catch {}
+}
+
+/* =====================================================================
+   RENDER: STATUS + SIDEBAR
+   ===================================================================== */
+function renderStatus() {
+  const dot = $('#status-dot'), txt = $('#status-txt');
+  dot.className = 'dot' + (state.syncing ? ' busy' : state.syncError ? ' err' : '');
+  txt.textContent = state.syncing ? 'Syncing…' : state.syncError ? 'Offline · tap refresh' : state.syncAt ? 'Synced ' + fmt.ago(state.syncAt) : 'Cached copy';
+  $('#refresh-btn').disabled = state.syncing;
+  $('#brand-sub').textContent = state.loaded ? `${state.files.length} files · ${fmt.size(state.totalSize)}` : 'Loading…';
+}
+function renderAll() { renderSidebar(); renderTabs(); renderView(); renderStatus(); }
+
+function renderSidebar() {
+  const q = state.query.trim();
+  $('#side-results').hidden = !q; $('#side-browse').hidden = !!q;
+  $('#side-clear').hidden = !q; $('#side-kbd').hidden = !!q;
+  if (q) return renderSideResults(q);
+  renderPadList(); renderTree();
+}
+function padRow(p) {
+  const row = h('button', {class: 'row', type: 'button', dataset: {id: 'pad:' + p.id}, title: p.title, onclick: () => { openItem(p); closeSidebar(); },
+    oncontextmenu: e => { e.preventDefault(); itemMenu(p, e.clientX, e.clientY); }},
+    ficon(p), h('span', {class: 'name', text: p.title}), p.isLocked && icon('lock', 'ic-sm'));
+  return row;
+}
+function renderPadList() {
+  const box = $('#pad-list'); box.replaceChildren();
+  $('#pad-count').textContent = state.pads.length || '';
+  if (!state.loaded) return box.append(h('div', {class: 'skel'}));
+  if (!state.pads.length) return box.append(h('div', {class: 'empty-mini', text: state.padsError ? 'Pads unavailable' : 'No pads yet'}));
+  state.pads.forEach(p => box.append(padRow(p)));
+}
+function fileRow(item, depth, query) {
+  const fav = state.favorites.has(item.id);
+  const row = h('button', {class: 'row', type: 'button', role: 'treeitem', dataset: {id: item.id}, title: item.name, style: {'--depth': depth},
+    onclick: () => { openItem(item); closeSidebar(); },
+    oncontextmenu: e => { e.preventDefault(); itemMenu(item, e.clientX, e.clientY); }},
+    h('span', {class: 'spacer'}), ficon(item),
+    query != null
+      ? h('span', {class: 'name'}, highlight(item.name, query), h('span', {class: 'result-path', text: item.path}))
+      : h('span', {class: 'name', text: item.name}),
+    item.expiresAt && h('span', {class: 'badge warn', dataset: {expires: item.expiresAt}}),
+    fav && icon('star', 'star'));
+  return row;
+}
+function folderRow(item, depth) {
+  const open = state.expanded.has(item.id);
+  return h('button', {class: 'row', type: 'button', role: 'treeitem', 'aria-expanded': String(open), dataset: {id: item.id, folder: '1'}, title: item.name, style: {'--depth': depth},
+    oncontextmenu: e => { e.preventDefault(); itemMenu(item, e.clientX, e.clientY); }},
+    icon('chev', 'chev'), ficon(item), h('span', {class: 'name', text: item.name}), h('span', {class: 'meta', text: (item.children || []).length || ''}));
+}
+function renderLevel(items, depth, box) {
+  items.forEach(item => {
+    if (item.type !== 'folder') return box.append(fileRow(item, depth));
+    const row = folderRow(item, depth);
+    const group = h('div', {role: 'group'});
+    group.hidden = !state.expanded.has(item.id);
+    if (!group.hidden) renderLevel(item.children || [], depth + 1, group);
+    row.onclick = () => {
+      const open = !state.expanded.has(item.id);
+      open ? state.expanded.add(item.id) : state.expanded.delete(item.id);
+      store.set('dw_expanded', [...state.expanded]);
+      row.setAttribute('aria-expanded', String(open)); group.hidden = !open;
+      if (open && !group.childElementCount) renderLevel(item.children || [], depth + 1, group);
+      if (open) { state.browse = item.id; store.set('dw_browse', item.id); if (state.active === 'home') renderView(); }
+    };
+    box.append(row, group);
+  });
+}
+function renderTree() {
+  const box = $('#tree'); box.replaceChildren();
+  if (!state.loaded) { box.append(h('div', {class: 'skel'}), h('div', {class: 'skel'}), h('div', {class: 'skel'})); return; }
+  if (!state.tree.length) return box.append(h('div', {class: 'empty-mini', text: 'This workspace is empty. Upload something!'}));
+  renderLevel(state.tree, 0, box);
+  markActiveRows();
+}
+function searchAll(q, limit = 60) {
+  const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const out = [];
+  const consider = (item) => {
+    const name = String(item.name || '').toLowerCase(), path = String(item.path || '').toLowerCase();
+    let score = 0;
+    for (const t of terms) {
+      if (name.startsWith(t)) score += 30; else if (name.includes(t)) score += 18; else if (path.includes(t)) score += 6; else return;
+    }
+    if (item.isPad) score += 2;
+    out.push({item, score});
+  };
+  state.pads.forEach(consider);
+  for (const it of state.byId.values()) if (!it.isPad) consider(it);
+  return out.sort((a, b) => b.score - a.score || String(a.item.name).localeCompare(b.item.name)).slice(0, limit).map(r => r.item);
+}
+function renderSideResults(q) {
+  const box = $('#side-results'); box.replaceChildren();
+  const res = searchAll(q, 80);
+  box.append(h('div', {class: 'side-label'}, h('span', {text: 'Results'}), h('span', {text: res.length + (res.length === 80 ? '+' : '')})));
+  if (!res.length) return box.append(h('div', {class: 'empty-mini', text: `Nothing matches “${q}”`}));
+  res.forEach(it => {
+    if (it.isPad) return box.append(padRow(it));
+    if (it.type === 'folder') {
+      return box.append(h('button', {class: 'row', type: 'button', onclick: () => { browseTo(it.id); closeSidebar(); }},
+        ficon(it), h('span', {class: 'name'}, highlight(it.name, q), h('span', {class: 'result-path', text: it.path}))));
+    }
+    box.append(fileRow(it, 0, q));
+  });
+  markActiveRows();
+}
+function markActiveRows() {
+  const tab = activeTab();
+  const key = tab ? tab.key : null;
+  document.querySelectorAll('.sidebar .row[data-id]').forEach(r => r.classList.toggle('active', r.dataset.id === key));
+  $('#nav-home').classList.toggle('active', state.active === 'home');
+}
+function renderAdminPill() { $('#admin-pill').hidden = !admin.valid(); }
+
+/* =====================================================================
+   TABS
+   ===================================================================== */
+const keyOf = item => item.isPad ? 'pad:' + item.id : item.id;
+const activeTab = () => state.tabs.find(t => t.key === state.active) || null;
+function openItem(item) {
+  if (!item) return;
+  if (item.type === 'folder') return browseTo(item.id);
+  const key = keyOf(item);
+  let tab = state.tabs.find(t => t.key === key);
+  if (!tab) {
+    tab = {key, item, kind: kindOf(item), zoom: 100, rotate: 0, content: null, loading: false, dirty: false, draft: null, wrap: false, mode: 'view'};
+    if (item.isPad) { tab.version = item.version; if (!item.isLocked) tab.content = item.content || ''; }
+    state.tabs.push(tab);
+  }
+  state.active = key;
+  addRecent(item);
+  renderTabs(); renderView(); markActiveRows();
+}
+function closeTab(key) {
+  const i = state.tabs.findIndex(t => t.key === key); if (i < 0) return;
+  const tab = state.tabs[i];
+  const doClose = () => {
+    state.tabs.splice(i, 1);
+    if (state.active === key) state.active = state.tabs[Math.max(0, i - 1)] ? state.tabs[Math.max(0, i - 1)].key : 'home';
+    renderTabs(); renderView(); markActiveRows();
+  };
+  if (tab.dirty) confirmDialog({title: 'Discard changes?', message: `“${tab.item.name}” has unsaved changes.`, confirmText: 'Discard', danger: true}).then(ok => ok && doClose());
+  else doClose();
+}
+function activate(key) { state.active = key; renderTabs(); renderView(); markActiveRows(); }
+function renderTabs() {
+  const bar = $('#tabs'); bar.replaceChildren();
+  bar.append(h('button', {class: 'tab hometab', type: 'button', role: 'tab', 'aria-selected': String(state.active === 'home'), title: 'Home', onclick: () => activate('home')}, icon('home', 'ic-sm'), h('span', {class: 'tname', text: 'Home'})));
+  state.tabs.forEach(tab => {
+    const el = h('div', {class: 'tab', role: 'tab', tabindex: '0', 'aria-selected': String(state.active === tab.key), title: tab.item.name,
+      onclick: () => activate(tab.key), onauxclick: e => { if (e.button === 1) closeTab(tab.key); },
+      onkeydown: e => { if (e.key === 'Enter') activate(tab.key); }},
+      ficon(tab.item), h('span', {class: 'tname', text: tab.item.name}), tab.dirty && h('span', {class: 'dirty', title: 'Unsaved changes'}),
+      h('button', {class: 'x', type: 'button', 'aria-label': 'Close ' + tab.item.name, onclick: e => { e.stopPropagation(); closeTab(tab.key); }}, icon('x', 'ic-sm')));
+    el.querySelector('.ficon').style.cssText = 'width:20px;height:20px;border-radius:6px';
+    bar.append(el);
+  });
+  const sel = bar.querySelector('[aria-selected="true"]'); if (sel) sel.scrollIntoView({block: 'nearest', inline: 'nearest'});
+}
+function addRecent(item) {
+  const key = keyOf(item);
+  state.recents = [{key, at: Date.now()}, ...state.recents.filter(r => r.key !== key)].slice(0, 12);
+  store.set('dw_recent', state.recents);
+}
+
+/* =====================================================================
+   HOME VIEW
+   ===================================================================== */
+function renderView() {
+  const view = $('#view'); view.replaceChildren();
+  if (state.active === 'home') return renderHome(view);
+  const tab = activeTab();
+  if (!tab) { state.active = 'home'; return renderHome(view); }
+  renderFileView(view, tab);
+}
+function browseTo(folderId) {
+  state.browse = folderId; store.set('dw_browse', folderId);
+  state.filter = 'all'; state.favOnly = false;
+  activate('home');
+}
+function currentFolder() {
+  const f = state.browse && state.byId.get(state.browse);
+  return f && f.type === 'folder' ? f : null;
+}
+function renderHome(view) {
+  const home = h('div', {class: 'home'});
+  view.append(home);
+  if (!state.loaded) {
+    home.append(state.syncError
+      ? h('div', {class: 'empty'}, icon('alert'), h('b', {text: 'Could not reach your workspace'}), h('span', {text: 'Check your connection, or that the Apps Script web app is deployed with access set to “Anyone”.'}), h('button', {class: 'btn btn-primary', type: 'button', text: 'Try again', onclick: () => refresh()}))
+      : h('div', {class: 'loading', style: {height: '50vh'}}, h('div', {class: 'spinner'})));
+    return;
+  }
+  const folders = state.folders.length - 1;
+  home.append(h('div', {class: 'hero'},
+    h('div', {}, h('h1', {text: 'Your workspace'}), h('p', {text: `${state.files.length} files · ${folders} folders · ${state.pads.length} pads · ${fmt.size(state.totalSize)}`})),
+    h('div', {class: 'actions'},
+      h('button', {class: 'btn', type: 'button', onclick: openPalette}, icon('search'), 'Search', h('span', {class: 'kbd', text: 'Ctrl K'})),
+      h('button', {class: 'btn', type: 'button', onclick: () => newFolder(currentFolder() ? currentFolder().id : state.rootId)}, icon('folder-plus'), 'New folder'),
+      h('button', {class: 'btn btn-primary', type: 'button', onclick: () => openUpload()}, icon('upload'), 'Upload'))));
+
+  const atTop = !currentFolder() && state.filter === 'all' && !state.favOnly;
+  if (atTop) {
+    const recents = state.recents.map(r => state.byId.get(r.key)).filter(Boolean).slice(0, 8);
+    if (recents.length) home.append(h('section', {class: 'section'}, h('div', {class: 'section-head'}, h('h2', {text: 'Recent'})), h('div', {class: 'cards'}, recents.map(cardFor))));
+    const favs = [...state.favorites].map(id => state.byId.get(id)).filter(Boolean).slice(0, 8);
+    if (favs.length) home.append(h('section', {class: 'section'}, h('div', {class: 'section-head'}, h('h2', {text: 'Favorites'})), h('div', {class: 'cards'}, favs.map(cardFor))));
+  }
+
+  const sec = h('section', {class: 'section'});
+  home.append(sec);
+  const folder = currentFolder();
+  const flat = state.filter !== 'all' || state.favOnly;
+  const crumbs = h('div', {class: 'crumbs'});
+  if (flat) crumbs.append(h('button', {type: 'button', text: state.favOnly ? 'Favorites' : FILTERS.find(f => f[0] === state.filter)[1] + ' everywhere'}));
+  else {
+    crumbs.append(h('button', {type: 'button', onclick: () => browseTo(null)}, 'Home'));
+    if (folder) [...folder.pathIds, folder.id].forEach(id => { const f = state.byId.get(id); if (f) crumbs.append(icon('chev'), h('button', {type: 'button', text: f.name, onclick: () => browseTo(id)})); });
+  }
+  const sortSel = h('select', {class: 'select', 'aria-label': 'Sort by', style: {height: '30px', width: 'auto', 'font-size': '12px'}, onchange: e => { state.sort = e.target.value; store.set('dw_sort', state.sort); renderView(); }},
+    [['name', 'Name'], ['modified', 'Last modified'], ['size', 'Size'], ['type', 'Type']].map(([v, l]) => h('option', {value: v, text: 'Sort: ' + l, selected: state.sort === v})));
+  const seg = h('div', {class: 'seg', role: 'group', 'aria-label': 'Layout'},
+    h('button', {type: 'button', 'aria-label': 'Grid view', 'aria-pressed': String(state.view === 'grid'), onclick: () => setView('grid')}, icon('grid', 'ic-sm')),
+    h('button', {type: 'button', 'aria-label': 'List view', 'aria-pressed': String(state.view === 'list'), onclick: () => setView('list')}, icon('list', 'ic-sm')));
+  const chips = h('div', {class: 'chips'},
+    FILTERS.map(([v, l]) => h('button', {class: 'chip', type: 'button', 'aria-pressed': String(state.filter === v && !state.favOnly), text: l, onclick: () => { state.filter = v; state.favOnly = false; renderView(); }})),
+    h('button', {class: 'chip', type: 'button', 'aria-pressed': String(state.favOnly), onclick: () => { state.favOnly = !state.favOnly; state.filter = 'all'; renderView(); }}, icon('star', 'ic-sm'), 'Favorites'));
+  sec.append(h('div', {class: 'browser-bar'}, crumbs, chips, sortSel, seg));
+
+  let items;
+  if (flat) items = [...state.files].filter(f => state.favOnly ? state.favorites.has(f.id) : matchesFilter(f, state.filter));
+  else items = folder ? (folder.children || []) : state.tree;
+  items = sortItems(items);
+  if (!items.length) {
+    sec.append(h('div', {class: 'empty'}, icon(flat ? 'search' : 'folder'),
+      h('b', {text: flat ? 'Nothing here yet' : 'This folder is empty'}),
+      h('span', {text: flat ? 'Try another filter.' : 'Drop files anywhere on this page to upload them here.'}),
+      !flat && h('button', {class: 'btn btn-primary', type: 'button', onclick: () => openUpload()}, icon('upload'), 'Upload files')));
+    return;
+  }
+  sec.append(state.view === 'grid' ? h('div', {class: 'grid'}, items.map(tileFor)) : listFor(items, flat));
+}
+function setView(v) { state.view = v; store.set('dw_view', v); store.del('drive_view_mode_v1'); renderView(); }
+function sortItems(items) {
+  const s = state.sort;
+  return [...items].sort((a, b) => {
+    if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
+    if (s === 'modified') return String(b.modifiedTime || '').localeCompare(String(a.modifiedTime || ''));
+    if (s === 'size') return (Number(b.size) || 0) - (Number(a.size) || 0);
+    if (s === 'type') return kindOf(a).localeCompare(kindOf(b)) || String(a.name).localeCompare(b.name, undefined, {numeric: true});
+    return String(a.name).localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'});
+  });
+}
+function metaLine(item) {
+  if (item.isPad) return (item.isLocked ? 'Locked · ' : '') + 'v' + item.version + (item.updatedAt ? ' · ' + fmt.ago(item.updatedAt) : '');
+  if (item.type === 'folder') return (item.children || []).length + ' items';
+  return [fmt.size(item.size), item.modifiedTime && fmt.ago(item.modifiedTime)].filter(Boolean).join(' · ');
+}
+function cardFor(item) {
+  return h('button', {class: 'card', type: 'button', onclick: () => openItem(item), oncontextmenu: e => { e.preventDefault(); itemMenu(item, e.clientX, e.clientY); }},
+    ficon(item), h('span', {class: 't'}, h('b', {text: item.name}), h('span', {text: item.isPad ? 'Pad · ' + metaLine(item) : item.path})));
+}
+function tileFor(item) {
+  const k = kindOf(item);
+  const thumb = h('div', {class: 'thumb', dataset: {kind: k}}, ficon(item));
+  if (item.type === 'file' && ['image', 'video', 'pdf', 'doc', 'sheet', 'slides'].includes(k)) {
+    const img = h('img', {src: thumbUrl(item.id), alt: '', loading: 'lazy', referrerpolicy: 'no-referrer'});
+    img.onload = () => { if (img.naturalWidth > 8) thumb.replaceChildren(img); };
+    img.onerror = () => img.remove();
+    img.style.display = 'none'; thumb.append(img);
+    img.addEventListener('load', () => { img.style.display = ''; });
+  }
+  const tile = h('div', {class: 'tile', dataset: {kind: k}},
+    h('button', {type: 'button', style: {display: 'contents'}, 'aria-label': 'Open ' + item.name, onclick: () => openItem(item)},
+      thumb, h('div', {class: 'info'}, h('b', {text: item.name}), h('span', {text: metaLine(item)}))),
+    h('div', {class: 'tags'}, item.expiresAt ? h('span', {class: 'badge warn', dataset: {expires: item.expiresAt}}) : h('span'), state.favorites.has(item.id) ? h('span', {class: 'badge', style: {color: 'var(--warning)'}}, icon('star', 'ic-sm')) : h('span')),
+    h('button', {class: 'more', type: 'button', 'aria-label': 'More actions for ' + item.name, onclick: e => { const r = e.currentTarget.getBoundingClientRect(); itemMenu(item, r.left, r.bottom + 4); }}, icon('more', 'ic-sm')));
+  tile.addEventListener('contextmenu', e => { e.preventDefault(); itemMenu(item, e.clientX, e.clientY); });
+  return tile;
+}
+function listFor(items, flat) {
+  const box = h('div', {class: 'list', role: 'list'});
+  box.append(h('div', {class: 'lrow head'}, h('span', {text: 'Name'}), h('span', {class: 'c d', text: flat ? 'Location' : 'Modified'}), h('span', {class: 'c', text: 'Size'}), h('span')));
+  items.forEach(item => {
+    const row = h('div', {class: 'lrow', role: 'listitem'},
+      h('button', {class: 'n', type: 'button', style: {'text-align': 'left'}, onclick: () => openItem(item)}, ficon(item), h('span', {text: item.name}), item.expiresAt && h('span', {class: 'badge warn', dataset: {expires: item.expiresAt}}), state.favorites.has(item.id) && icon('star', 'ic-sm')),
+      h('span', {class: 'c d', text: flat ? item.path : (item.modifiedTime ? fmt.date(item.modifiedTime) : '—')}),
+      h('span', {class: 'c', text: item.type === 'folder' ? (item.children || []).length + ' items' : fmt.size(item.size)}),
+      ibtn('more', 'More actions for ' + item.name, e => { const r = e.currentTarget.getBoundingClientRect(); itemMenu(item, r.left - 160, r.bottom + 4); }));
+    row.addEventListener('contextmenu', e => { e.preventDefault(); itemMenu(item, e.clientX, e.clientY); });
+    box.append(row);
+  });
+  return box;
+}
+
+/* =====================================================================
+   ITEM MENU + INFO DRAWER
+   ===================================================================== */
+function toggleFavorite(item) {
+  state.favorites.has(item.id) ? state.favorites.delete(item.id) : state.favorites.add(item.id);
+  store.set('drive_favorites_v1', [...state.favorites]);
+  renderSidebar(); if (state.active === 'home') renderView();
+}
+function itemMenu(item, x, y) {
+  const a = admin.valid();
+  if (item.isPad) {
+    return showMenu([
+      {icon: 'eye', label: 'Open', run: () => openItem(item)},
+      {icon: 'download', label: 'Download as .txt', run: () => downloadItem(item)},
+      a && '-', a && {icon: 'edit', label: 'Rename pad', run: () => adminPadRename(item)},
+      a && {icon: 'lock', label: 'Set or change PIN', run: () => adminPadPin(item)},
+      a && {icon: 'trash', label: 'Delete pad', danger: true, run: () => adminPadDelete(item)}
+    ], x, y);
+  }
+  const isFolder = item.type === 'folder';
+  showMenu([
+    {icon: isFolder ? 'folder' : 'eye', label: 'Open', run: () => openItem(item)},
+    !isFolder && {icon: 'star', label: state.favorites.has(item.id) ? 'Remove from favorites' : 'Add to favorites', run: () => toggleFavorite(item)},
+    !isFolder && {icon: 'download', label: 'Download', run: () => downloadItem(item)},
+    {icon: 'link', label: 'Copy link', run: () => copyText(isFolder ? `https://drive.google.com/drive/folders/${item.id}` : viewUrl(item.id))},
+    !isFolder && {icon: 'ext', label: 'Open in Google Drive', run: () => window.open(viewUrl(item.id), '_blank', 'noopener')},
+    isFolder && {icon: 'upload', label: 'Upload here', run: () => openUpload({dest: item.id})},
+    {icon: 'info', label: 'Details', run: () => showInfo(item)},
+    a && '-',
+    a && {icon: 'edit', label: 'Rename', run: () => adminRename(item)},
+    a && {icon: 'move', label: 'Move…', run: () => adminMoveDialog([item])},
+    a && {icon: 'trash', label: 'Move to trash', danger: true, run: () => adminTrash([item])}
+  ], x, y);
+}
+let drawerEl = null;
+function closeInfo() { if (drawerEl) { const d = drawerEl; drawerEl = null; d.classList.remove('open'); setTimeout(() => d.remove(), 260); } }
+function showInfo(item) {
+  closeInfo();
+  const k = kindOf(item);
+  const rows = [['Type', KIND_LABEL[k] + (item.mimeType ? ` (${item.mimeType})` : '')], ['Size', item.type === 'folder' ? (item.children || []).length + ' items' : fmt.size(item.size)],
+    ['Location', item.path], ['Modified', item.modifiedTime ? fmt.datetime(item.modifiedTime) : '—'], ['Created', item.createdTime ? fmt.datetime(item.createdTime) : '—']];
+  if (item.isPad) rows.splice(1, 4, ['Version', 'v' + item.version], ['Updated', item.updatedAt ? fmt.datetime(item.updatedAt) : '—'], ['Status', item.isLocked ? 'Locked' : 'Unlocked']);
+  if (item.expiresAt) rows.push(['Auto-delete', fmt.datetime(item.expiresAt)]);
+  const kv = h('dl', {class: 'kv'}, rows.map(([k2, v]) => [h('dt', {text: k2}), h('dd', {text: v})]));
+  const extra = h('div');
+  drawerEl = h('aside', {class: 'drawer', role: 'dialog', 'aria-label': 'Details'},
+    h('div', {class: 'modal-head'}, h('div', {style: {display: 'flex', gap: '12px', 'align-items': 'center', 'min-width': '0'}}, ficon(item), h('b', {text: item.name, style: {'overflow-wrap': 'anywhere'}})), ibtn('x', 'Close details', closeInfo)),
+    kv, extra,
+    !item.isPad && h('div', {class: 'modal-actions', style: {'justify-content': 'flex-start'}},
+      h('button', {class: 'btn btn-sm', type: 'button', onclick: () => copyText(item.id)}, icon('copy', 'ic-sm'), 'Copy ID'),
+      item.type === 'file' && h('button', {class: 'btn btn-sm', type: 'button', onclick: () => downloadItem(item)}, icon('download', 'ic-sm'), 'Download')));
+  document.body.append(drawerEl);
+  requestAnimationFrame(() => drawerEl && drawerEl.classList.add('open'));
+  if (admin.valid() && !item.isPad) {
+    api.post('adminDetails', {itemId: item.id}).then(r => {
+      const d = r.details;
+      extra.append(h('dl', {class: 'kv'}, [['Owner', d.ownerName || d.ownerEmail || '—'], ['Owner email', d.ownerEmail || '—'], ['Last edit by', d.lastModifiedBy || '—']].map(([a2, b]) => [h('dt', {text: a2}), h('dd', {text: b})])));
+    }).catch(err => debug('details', err));
+  }
+}
+function downloadItem(item) {
+  if (item.isPad) {
+    const tab = state.tabs.find(t => t.key === keyOf(item));
+    const text = tab ? (tab.draft != null ? tab.draft : tab.content || '') : item.content || '';
+    if (item.isLocked && !text) return toast('Unlock the pad first to download it', 'error');
+    const url = URL.createObjectURL(new Blob([text], {type: 'text/plain;charset=utf-8'}));
+    const a = h('a', {href: url, download: item.title.replace(/[\\/:*?"<>|]+/g, '_') + '.txt'}); document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    return;
+  }
+  const a = h('a', {href: downloadUrl(item.id), target: '_blank', rel: 'noopener', download: item.name}); document.body.append(a); a.click(); a.remove();
+}
+
+/* =====================================================================
+   FILE VIEW
+   ===================================================================== */
+const CDN = {
+  marked: 'https://cdn.jsdelivr.net/npm/marked@12/marked.min.js',
+  purify: 'https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js',
+  prism: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js',
+  prismAuto: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js'
+};
+const LANG = {js: 'javascript', mjs: 'javascript', gs: 'javascript', jsx: 'jsx', ts: 'typescript', tsx: 'tsx', json: 'json', py: 'python', sql: 'sql', css: 'css', scss: 'scss', html: 'markup', htm: 'markup', xml: 'markup', svg: 'markup', c: 'c', h: 'c', cpp: 'cpp', hpp: 'cpp', cs: 'csharp', java: 'java', kt: 'kotlin', go: 'go', rs: 'rust', rb: 'ruby', php: 'php', sh: 'bash', bash: 'bash', ps1: 'powershell', yml: 'yaml', yaml: 'yaml', toml: 'toml', ini: 'ini', md: 'markdown'};
+const isEditable = tab => tab.item.isPad || EXT.editable.test(tab.item.name);
+
+async function loadText(tab) {
+  if (tab.content != null || tab.loading) return;
+  tab.loading = true; tab.error = null;
+  try {
+    const r = await api.get({mode: 'file', id: tab.item.id});
+    tab.content = r.content; tab.modifiedTime = r.modifiedTime;
+  } catch (err) { tab.error = err.message; debug('loadText', err); }
+  tab.loading = false;
+  if (state.active === tab.key) renderView();
+}
+function renderFileView(view, tab) {
+  const item = tab.item;
+  const wrap = h('div', {class: 'fileview'});
+  const body = h('div', {class: 'vbody'});
+  const actions = h('div', {class: 'vactions'});
+  const zoomable = !['editor', 'pad'].includes(tab.kind) && !(isEditable(tab));
+  if (zoomable) {
+    const z = h('span', {text: tab.zoom + '%'});
+    actions.append(h('div', {class: 'zoomgrp'},
+      ibtn('minus', 'Zoom out', () => setZoom(tab, tab.zoom - 10)), z, ibtn('plus', 'Zoom in', () => setZoom(tab, tab.zoom + 10))));
+  }
+  if (tab.kind === 'image') actions.append(ibtn('rotate', 'Rotate', () => { tab.rotate = (tab.rotate + 90) % 360; applyZoom(tab); }));
+  if (['code', 'text', 'html', 'markdown'].includes(tab.kind) && !isEditable(tab)) actions.append(ibtn('wrap', 'Toggle line wrap', () => { tab.wrap = !tab.wrap; renderView(); }, {class: 'icon-btn' + (tab.wrap ? ' on' : '')}));
+  if (tab.kind === 'html' || tab.kind === 'markdown') {
+    actions.append(h('div', {class: 'seg', style: {'margin-left': '4px'}},
+      h('button', {type: 'button', 'aria-pressed': String(tab.mode === 'view'), text: tab.kind === 'html' ? 'Code' : 'Read', style: {padding: '0 10px', 'font-size': '12px'}, onclick: () => { tab.mode = 'view'; renderView(); }}),
+      h('button', {type: 'button', 'aria-pressed': String(tab.mode === 'alt'), text: tab.kind === 'html' ? 'Preview' : 'Source', style: {padding: '0 10px', 'font-size': '12px'}, onclick: () => { tab.mode = 'alt'; renderView(); }})));
+  }
+  actions.append(...[h('span', {class: 'vsep hide-sm'}),
+    !item.isPad && ibtn('star', state.favorites.has(item.id) ? 'Remove from favorites' : 'Add to favorites', () => { toggleFavorite(item); renderView(); }, {class: 'icon-btn' + (state.favorites.has(item.id) ? ' on' : '')}),
+    ibtn('info', 'Details', () => showInfo(item)),
+    !item.isPad && h('span', {class: 'hide-sm'}, ibtn('link', 'Copy link', () => copyText(viewUrl(item.id)))),
+    h('span', {class: 'hide-sm'}, ibtn('ext', 'Open in new tab', () => openInNewTab(tab))),
+    ibtn('download', 'Download', () => downloadItem(item)),
+    ibtn('max', 'Fullscreen (F)', toggleFullscreen)].filter(Boolean));
+  wrap.append(h('div', {class: 'vbar'},
+    h('div', {class: 'vtitle'}, ficon(item), h('div', {class: 't'}, h('b', {text: item.name}), h('span', {text: item.isPad ? 'Pad' + (item.isLocked ? ' · locked' : '') : item.path + ' · ' + fmt.size(item.size)})),
+      item.expiresAt && h('span', {class: 'badge warn', dataset: {expires: item.expiresAt}, title: 'Auto-delete at ' + fmt.datetime(item.expiresAt)})),
+    actions), body);
+  view.append(wrap);
+  tab.body = body;
+  renderBody(tab, body);
+}
+function setZoom(tab, z) { tab.zoom = Math.max(25, Math.min(300, z)); renderView(); }
+function applyZoom(tab) {
+  const b = tab.body; if (!b) return;
+  const s = tab.zoom / 100;
+  const img = b.querySelector('.imgstage img');
+  if (img) { img.style.transform = `scale(${s}) rotate(${tab.rotate}deg)`; return; }
+  const layer = b.querySelector('.zoomlayer');
+  if (layer) { layer.style.transform = `scale(${s})`; layer.style.width = (100 / s) + '%'; layer.style.height = (100 / s) + '%'; }
+  const z = b.querySelector('.zoomable');
+  if (z) z.style.zoom = s;
+}
+function iframePreview(tab, body) {
+  const layer = h('div', {class: 'zoomlayer'}, h('iframe', {src: previewUrl(tab.item.id), title: tab.item.name, allow: 'autoplay; fullscreen', referrerpolicy: 'no-referrer'}));
+  body.append(layer); applyZoom(tab);
+}
+function renderBody(tab, body) {
+  const item = tab.item;
+  if (isEditable(tab)) return renderEditor(tab, body);
+  switch (tab.kind) {
+    case 'image': {
+      const img = h('img', {src: thumbUrl(item.id, 2400), alt: item.name, referrerpolicy: 'no-referrer'});
+      img.onerror = () => { body.replaceChildren(); iframePreview(tab, body); };
+      body.append(h('div', {class: 'imgstage'}, img)); applyZoom(tab); return;
+    }
+    case 'video': case 'audio': {
+      body.classList.add('dark-stage');
+      const el = h(tab.kind, {src: downloadUrl(item.id), controls: true, playsinline: true, preload: 'metadata'});
+      el.onerror = () => { body.replaceChildren(); body.classList.remove('dark-stage'); iframePreview(tab, body); };
+      const speeds = h('div', {class: 'speed'}, 'Speed', [0.5, 1, 1.25, 1.5, 2].map(s => h('button', {class: 'chip', type: 'button', 'aria-pressed': String(s === 1), text: s + '×', onclick: e => { el.playbackRate = s; e.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(c === e.currentTarget))); }})));
+      body.append(h('div', {class: 'mediastage'}, h('div', {class: 'mediacard'}, el, speeds))); return;
+    }
+    case 'markdown': case 'code': case 'text': case 'html': {
+      if (tab.content == null) {
+        if (tab.error) return body.append(errorState(tab.error, () => { tab.error = null; loadText(tab); renderView(); }, () => { body.replaceChildren(); iframePreview(tab, body); }));
+        loadText(tab); return body.append(h('div', {class: 'loading'}, h('div', {class: 'spinner'})));
+      }
+      if (tab.kind === 'markdown' && tab.mode === 'view') return renderMarkdown(tab, body);
+      if (tab.kind === 'html' && tab.mode === 'alt') {
+        // Sandboxed: scripts run in an isolated origin and cannot touch this page.
+        const fr = h('iframe', {sandbox: 'allow-scripts allow-forms allow-popups allow-modals', title: item.name});
+        fr.srcdoc = tab.content;
+        body.append(h('div', {class: 'zoomlayer'}, fr)); applyZoom(tab); return;
+      }
+      return renderCode(tab, body);
+    }
+    default: iframePreview(tab, body);
+  }
+}
+function errorState(message, retry, fallback) {
+  return h('div', {class: 'loading'}, h('div', {class: 'empty', style: {border: '0'}}, icon('alert'), h('b', {text: 'Could not open this file'}), h('span', {text: message}),
+    h('div', {style: {display: 'flex', gap: '8px'}}, h('button', {class: 'btn', type: 'button', text: 'Try again', onclick: retry}), fallback && h('button', {class: 'btn', type: 'button', text: 'Use Drive preview', onclick: fallback}))));
+}
+async function renderMarkdown(tab, body) {
+  const art = h('article', {class: 'prose zoomable'}, h('div', {class: 'spinner'}));
+  body.append(art);
+  try {
+    await Promise.all([loadScript(CDN.marked), loadScript(CDN.purify)]);
+    if (!window.__dwPurifyHook) {
+      window.__dwPurifyHook = true;
+      DOMPurify.addHook('afterSanitizeAttributes', n => { if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); } });
+    }
+    art.innerHTML = DOMPurify.sanitize(marked.parse(tab.content || ''));
+  } catch (err) { art.replaceChildren(h('pre', {text: tab.content})); debug('markdown', err); }
+  applyZoom(tab);
+}
+async function renderCode(tab, body) {
+  const ext = (tab.item.name.split('.').pop() || '').toLowerCase();
+  const lang = LANG[ext] || (tab.kind === 'html' ? 'markup' : tab.kind === 'markdown' ? 'markdown' : 'none');
+  const text = tab.content || '';
+  const box = h('div', {class: 'code-wrap zoomable' + (tab.wrap ? ' wrap' : '')});
+  const pre = h('pre');
+  box.append(pre); body.append(box);
+  const lines = text.split('\n');
+  const paint = html => {
+    pre.replaceChildren();
+    if (html == null) { lines.forEach(l => pre.append(h('span', {class: 'ln', text: l || ' '}))); return; }
+    // Prism output is escaped HTML; split it into lines while keeping tokens intact.
+    const tmp = h('code'); tmp.innerHTML = html;
+    let line = h('span', {class: 'ln'});
+    const flush = () => { if (!line.childNodes.length) line.append(' '); pre.append(line); line = h('span', {class: 'ln'}); };
+    const walk = (node, wrapFn) => node.childNodes.forEach(n => {
+      if (n.nodeType === 3) {
+        n.textContent.split('\n').forEach((part, i) => { if (i) flush(); if (part) line.append(wrapFn(document.createTextNode(part))); });
+      } else walk(n, t => { const c = n.cloneNode(false); c.append(wrapFn(t)); return c; });
+    });
+    walk(tmp, t => t); flush();
+  };
+  paint(null); applyZoom(tab);
+  if (lang === 'none' || text.length > 400000) return;
+  try {
+    if (!window.Prism) { window.Prism = {manual: true}; await loadScript(CDN.prism); await loadScript(CDN.prismAuto); Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/'; }
+    const code = h('code', {class: 'language-' + lang, text});
+    Prism.highlightElement(code, false, () => { if (document.contains(pre)) paint(code.innerHTML); });
+  } catch (err) { debug('prism', err); }
+}
+
+/* ---------- editor (pads + *.editable files) ---------- */
+function renderEditor(tab, body) {
+  const item = tab.item;
+  if (item.isPad && tab.content == null) {
+    if (admin.valid() && !tab.loading) { tab.loading = true; unlockPad(tab, ''); }
+    if (tab.loading) return body.append(h('div', {class: 'loading'}, h('div', {class: 'spinner'})));
+    const pin = h('input', {class: 'input', type: 'password', placeholder: 'PIN', 'aria-label': 'PIN', autocomplete: 'off', style: {'text-align': 'center', 'letter-spacing': '.2em'}});
+    const err = h('p', {class: 'form-error'});
+    const form = h('form', {class: 'lockcard', onsubmit: e => { e.preventDefault(); if (!pin.value) return pin.focus(); unlockPad(tab, pin.value, err); }},
+      icon('lock'), h('b', {text: 'This pad is locked', style: {'font-size': '16px'}}), h('span', {class: 'muted tiny', text: 'Enter the PIN to read and edit it.'}), pin, err,
+      h('button', {class: 'btn btn-primary', type: 'submit'}, icon('unlock'), 'Unlock'));
+    body.append(h('div', {class: 'lockscreen'}, form));
+    setTimeout(() => pin.focus(), 50);
+    return;
+  }
+  if (!item.isPad && tab.content == null) {
+    if (tab.error) return body.append(errorState(tab.error, () => { tab.error = null; loadText(tab); renderView(); }));
+    loadText(tab); return body.append(h('div', {class: 'loading'}, h('div', {class: 'spinner'})));
+  }
+  const ta = h('textarea', {spellcheck: 'false', 'aria-label': 'Editor for ' + item.name, value: tab.draft != null ? tab.draft : tab.content});
+  const info = h('span');
+  const status = h('span', {text: tab.dirty ? 'Unsaved changes' : 'All changes saved'});
+  const saveBtn = h('button', {class: 'btn btn-primary btn-sm', type: 'button', disabled: !tab.dirty, onclick: () => saveTab(tab)}, icon('save', 'ic-sm'), 'Save');
+  const updateInfo = () => { const v = ta.value; info.textContent = `${v.split('\n').length} lines · ${v.trim() ? v.trim().split(/\s+/).length : 0} words · ${v.length} chars`; };
+  ta.addEventListener('input', () => {
+    tab.draft = ta.value;
+    const was = tab.dirty; tab.dirty = tab.draft !== tab.content;
+    saveBtn.disabled = !tab.dirty; status.textContent = tab.dirty ? 'Unsaved changes' : 'All changes saved';
+    if (was !== tab.dirty) renderTabs();
+    updateInfo();
+  });
+  ta.addEventListener('keydown', e => {
+    if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); ta.setRangeText('  ', ta.selectionStart, ta.selectionEnd, 'end'); ta.dispatchEvent(new Event('input')); }
+  });
+  const lockBtn = item.isPad && (item.hasPin || admin.valid()) && h('button', {class: 'btn btn-sm', type: 'button', onclick: () => togglePadLock(tab)}, icon(item.isLocked ? 'unlock' : 'lock', 'ic-sm'), item.isLocked ? 'Unlock pad' : 'Lock pad');
+  body.append(h('div', {class: 'editor'}, ta,
+    h('div', {class: 'editor-foot'}, status, h('span', {text: item.isPad ? 'v' + (tab.version || item.version) : (tab.modifiedTime ? 'Saved ' + fmt.ago(tab.modifiedTime) : '')}), info, h('span', {class: 'grow'}),
+      h('span', {class: 'hide-sm', text: 'Ctrl+S to save'}), lockBtn, saveBtn)));
+  tab.editorSave = saveBtn;
+  updateInfo();
+  setTimeout(() => ta.focus({preventScroll: true}), 30);
+}
+async function unlockPad(tab, pin, errEl) {
+  tab.loading = true;
+  try {
+    const r = await api.post('readPad', {docId: tab.item.id, pin});
+    tab.content = r.doc.content; tab.version = r.doc.version; tab.pin = pin;
+  } catch (err) {
+    if (errEl) errEl.textContent = err.message; else toast(err.message, 'error');
+    tab.loading = false; return;
+  }
+  tab.loading = false;
+  if (state.active === tab.key) renderView();
+}
+async function saveTab(tab, force = false) {
+  if (!tab.dirty && !force) return;
+  const item = tab.item, text = tab.draft != null ? tab.draft : tab.content;
+  if (tab.editorSave) { tab.editorSave.disabled = true; tab.editorSave.lastChild.textContent = 'Saving…'; }
+  try {
+    if (item.isPad) {
+      const r = await api.post('savePad', {docId: item.id, content: text, baseVersion: tab.version, pin: tab.pin || '', force});
+      tab.version = r.version; item.version = r.version; item.updatedAt = r.updatedAt;
+      if (!item.isLocked) item.content = text;
+    } else {
+      const r = await api.post('saveText', {fileId: item.id, content: text, baseModified: tab.modifiedTime, force});
+      tab.modifiedTime = r.modifiedTime; item.modifiedTime = r.modifiedTime;
+    }
+    tab.content = text; tab.draft = null; tab.dirty = false;
+    toast('Saved “' + item.name + '”', 'success');
+  } catch (err) {
+    if (err.code === 'conflict') {
+      const choice = await dialog({title: 'Someone else changed this', message: 'This was saved by someone else after you opened it. Overwrite their version with yours, or reload theirs (your edits will be lost)?', confirmText: 'Overwrite', cancelText: 'Keep editing',
+        fields: [{name: 'reload', type: 'checkbox', label: 'Reload their version instead (discard mine)'}]});
+      if (choice && choice.reload) { tab.content = null; tab.draft = null; tab.dirty = false; if (item.isPad) { tab.loading = true; await unlockPad(tab, tab.pin || ''); } }
+      else if (choice) return saveTab(tab, true);
+    } else toast('Save failed: ' + err.message, 'error');
+  }
+  renderTabs(); if (state.active === tab.key) renderView();
+}
+async function togglePadLock(tab) {
+  const item = tab.item, lock = !item.isLocked;
+  let pin = tab.pin || '';
+  if (!admin.valid() && !pin) {
+    const v = await dialog({title: lock ? 'Lock pad' : 'Unlock pad', fields: [{name: 'pin', label: 'Pad PIN', type: 'password', required: true}], confirmText: lock ? 'Lock' : 'Unlock'});
+    if (!v) return; pin = v.pin;
+  }
+  try {
+    await api.post('padLock', {docId: item.id, pin, lock});
+    item.isLocked = lock; tab.pin = pin;
+    toast(lock ? 'Pad locked' : 'Pad unlocked', 'success');
+    renderSidebar(); renderView();
+  } catch (err) { toast(err.message, 'error'); }
+}
+function openInNewTab(tab) {
+  const item = tab.item;
+  if (!item.isPad && !['html', 'code', 'text', 'markdown'].includes(tab.kind)) return window.open(viewUrl(item.id), '_blank', 'noopener');
+  const content = tab.draft != null ? tab.draft : tab.content;
+  if (content == null) return toast('Wait for the file to load first', 'error');
+  const w = window.open('', '_blank');
+  if (!w) return toast('Allow pop-ups to open files in a new tab', 'error');
+  w.opener = null;
+  w.document.title = item.name;
+  w.document.body.style.cssText = 'margin:0;height:100vh';
+  if (tab.kind === 'html' && !item.isPad) {
+    const fr = w.document.createElement('iframe');
+    fr.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups allow-modals');
+    fr.style.cssText = 'border:0;width:100%;height:100%;display:block'; fr.srcdoc = content;
+    w.document.body.append(fr);
+  } else {
+    const pre = w.document.createElement('pre');
+    pre.style.cssText = 'margin:0;padding:24px;min-height:100%;box-sizing:border-box;background:#0f0f14;color:#e8e8ef;font:14px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere';
+    pre.textContent = content; w.document.body.append(pre);
+  }
+}
+async function toggleFullscreen() {
+  try { if (document.fullscreenElement) await document.exitFullscreen(); else await (document.querySelector('.vbody') || document.querySelector('.main')).requestFullscreen(); }
+  catch (err) { toast('Fullscreen is not available here', 'error'); }
+}
+
+/* =====================================================================
+   COMMAND PALETTE
+   ===================================================================== */
+let paletteOpen = null;
+function openPalette() {
+  if (paletteOpen) return;
+  const input = h('input', {type: 'text', placeholder: 'Search files, pads, folders and actions…', 'aria-label': 'Search', autocomplete: 'off', autofocus: true});
+  const list = h('div', {class: 'plist', role: 'listbox'});
+  const card = h('div', {class: 'modal-card palette', role: 'dialog', 'aria-label': 'Search'}, h('div', {class: 'pin'}, icon('search'), input, h('span', {class: 'kbd', text: 'Esc'})), list,
+    h('div', {class: 'pfoot'}, h('span', {text: '↑↓ to move'}), h('span', {text: 'Enter to open'}), h('span', {text: 'Ctrl K anytime'})));
+  const m = openModal(card, {top: true, onClose: () => { paletteOpen = null; }});
+  paletteOpen = m;
+  let entries = [], sel = 0;
+  const actions = [
+    {label: 'Upload files', sub: 'U', icon: 'upload', run: () => openUpload()},
+    {label: 'New folder', sub: 'In the current folder', icon: 'folder-plus', run: () => newFolder(currentFolder() ? currentFolder().id : state.rootId)},
+    {label: 'Go home', sub: 'H', icon: 'home', run: () => activate('home')},
+    {label: 'Refresh workspace', sub: 'R', icon: 'refresh', run: () => refresh()},
+    {label: 'Toggle light / dark theme', sub: 'T', icon: 'sun', run: toggleTheme},
+    {label: 'Use system theme', icon: 'moon', run: () => setTheme(null)},
+    {label: admin.valid() ? 'Open admin dashboard' : 'Admin sign in', sub: 'Ctrl+Shift+A', icon: 'shield', run: openAdmin},
+    admin.valid() && {label: 'Sign out of admin', icon: 'logout', run: () => admin.logout()},
+    {label: 'Keyboard shortcuts', sub: '?', icon: 'keyboard', run: openShortcuts}
+  ].filter(Boolean);
+  const draw = () => {
+    const q = input.value.trim();
+    list.replaceChildren(); entries = [];
+    const group = (title, items) => {
+      if (!items.length) return;
+      list.append(h('div', {class: 'pgroup', text: title}));
+      items.forEach(it => {
+        const i = entries.length; entries.push(it);
+        list.append(h('button', {class: 'pitem', type: 'button', role: 'option', 'aria-selected': String(i === sel), onmouseenter: () => { sel = i; mark(); }, onclick: () => choose(i)},
+          it.item ? ficon(it.item) : h('span', {class: 'ficon', style: {'--k': 'var(--accent)'}}, icon(it.icon)),
+          h('span', {class: 't'}, h('b', {}, q && it.item ? highlight(it.label, q) : it.label), it.sub && h('span', {text: it.sub}))));
+      });
+    };
+    if (!q) {
+      group('Recent', state.recents.map(r => state.byId.get(r.key)).filter(Boolean).slice(0, 6).map(it => ({item: it, label: it.name, sub: it.isPad ? 'Pad' : it.path})));
+      group('Actions', actions);
+    } else {
+      group('Results', searchAll(q, 30).map(it => ({item: it, label: it.name, sub: it.isPad ? 'Pad' : it.type === 'folder' ? 'Folder · ' + it.path : it.path})));
+      group('Actions', actions.filter(a => a.label.toLowerCase().includes(q.toLowerCase())));
+      if (!entries.length) list.append(h('div', {class: 'empty-mini', style: {padding: '20px', 'text-align': 'center'}, text: `No results for “${q}”`}));
+    }
+  };
+  const mark = () => list.querySelectorAll('.pitem').forEach((b, i) => { b.setAttribute('aria-selected', String(i === sel)); if (i === sel) b.scrollIntoView({block: 'nearest'}); });
+  const choose = i => { const e = entries[i]; if (!e) return; m.close(); e.item ? openItem(e.item) : e.run(); };
+  input.addEventListener('input', () => { sel = 0; draw(); });
+  input.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(entries.length - 1, sel + 1); mark(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(0, sel - 1); mark(); }
+    else if (e.key === 'Enter') { e.preventDefault(); choose(sel); }
+  });
+  draw();
+}
+
+/* =====================================================================
+   UPLOAD
+   ===================================================================== */
+const upload = {queue: [], dest: null, expiry: {on: false, mode: 'duration', minutes: 60, date: ''}, running: false, cancel: false};
+let uploadModal = null;
+function queueFiles(entries) {
+  const seen = new Set(upload.queue.map(q => q.path + '|' + q.file.size));
+  entries.forEach(e => { const k = e.path + '|' + e.file.size; if (!seen.has(k)) { seen.add(k); upload.queue.push(e); } });
+}
+async function entriesFromDrop(dt) {
+  const roots = [...(dt.items || [])].filter(i => i.kind === 'file').map(i => i.webkitGetAsEntry ? i.webkitGetAsEntry() : null);
+  if (!roots.length || roots.some(r => !r)) return [...dt.files].map(f => ({file: f, path: f.name}));
+  const out = [];
+  const walk = async (entry, prefix) => {
+    if (entry.isFile) { const f = await new Promise((res, rej) => entry.file(res, rej)); out.push({file: f, path: prefix + f.name}); }
+    else if (entry.isDirectory) {
+      const reader = entry.createReader(); let batch;
+      do { batch = await new Promise((res, rej) => reader.readEntries(res, rej)); for (const e of batch) await walk(e, prefix + entry.name + '/'); } while (batch.length);
+    }
+  };
+  for (const r of roots) await walk(r, '');
+  return out;
+}
+function folderPicker(selectedId, onPick) {
+  const filter = h('input', {class: 'input', type: 'search', placeholder: 'Find a folder…', 'aria-label': 'Find a folder', style: {height: '34px'}});
+  const list = h('div', {class: 'folderpick', role: 'listbox'});
+  const draw = () => {
+    const q = filter.value.trim().toLowerCase();
+    list.replaceChildren();
+    state.folders.filter(f => !q || f.path.toLowerCase().includes(q)).slice(0, 300).forEach(f => list.append(
+      h('button', {type: 'button', 'aria-pressed': String(f.id === selectedId), onclick: () => { selectedId = f.id; onPick(f); draw(); }}, icon(f.id === state.rootId ? 'home' : 'folder', 'ic-sm'), f.path)));
+  };
+  filter.addEventListener('input', draw); draw();
+  return h('div', {}, filter, list);
+}
+function openUpload({dest, files} = {}) {
+  if (files) queueFiles(files);
+  upload.dest = dest || upload.dest || (currentFolder() ? currentFolder().id : state.rootId);
+  if (!state.byId.get(upload.dest) && upload.dest !== state.rootId) upload.dest = state.rootId;
+  if (uploadModal) { drawUpload(); return; }
+  const card = h('div', {class: 'modal-card wide', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Upload files'});
+  uploadModal = openModal(card, {onClose: () => { uploadModal = null; }});
+  drawUpload();
+}
+function drawUpload() {
+  if (!uploadModal) return;
+  const card = uploadModal.card; card.replaceChildren();
+  const destFolder = state.folders.find(f => f.id === upload.dest) || state.folders[0];
+  const fileInput = h('input', {type: 'file', multiple: true, hidden: true, onchange: e => { queueFiles([...e.target.files].map(f => ({file: f, path: f.name}))); drawUpload(); }});
+  const dirInput = h('input', {type: 'file', multiple: true, hidden: true, webkitdirectory: true, onchange: e => { queueFiles([...e.target.files].map(f => ({file: f, path: f.webkitRelativePath || f.name}))); drawUpload(); }});
+  let pickerOpen = false;
+  const pickerBox = h('div', {hidden: true});
+  const destRow = h('div', {class: 'field'}, h('span', {class: 'lbl', text: 'Upload to'}),
+    h('div', {style: {display: 'flex', gap: '8px', 'align-items': 'center'}},
+      h('div', {class: 'btn', style: {flex: '1', 'justify-content': 'flex-start', cursor: 'default', overflow: 'hidden'}}, icon(destFolder.id === state.rootId ? 'home' : 'folder', 'ic-sm'), h('span', {text: destFolder.path, style: {overflow: 'hidden', 'text-overflow': 'ellipsis'}})),
+      h('button', {class: 'btn', type: 'button', text: 'Change', onclick: () => { pickerOpen = !pickerOpen; pickerBox.hidden = !pickerOpen; }}),
+      h('button', {class: 'btn', type: 'button', title: 'New folder here', 'aria-label': 'New folder here', onclick: async () => { const id = await newFolder(upload.dest); if (id) { upload.dest = id; drawUpload(); } }}, icon('folder-plus'))),
+    pickerBox);
+  pickerBox.append(folderPicker(upload.dest, f => { upload.dest = f.id; drawUpload(); }));
+
+  const dz = h('div', {class: 'dropzone', tabindex: '0', role: 'button', 'aria-label': 'Choose files to upload',
+    onclick: () => fileInput.click(), onkeydown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } }},
+    icon('upload'), h('b', {text: 'Drop files or folders here'}), h('span', {class: 'tiny muted', text: 'or click to browse · paste with Ctrl+V'}),
+    h('div', {style: {display: 'flex', gap: '8px', 'margin-top': '4px'}},
+      h('button', {class: 'btn btn-sm', type: 'button', onclick: e => { e.stopPropagation(); fileInput.click(); }}, 'Choose files'),
+      h('button', {class: 'btn btn-sm', type: 'button', onclick: e => { e.stopPropagation(); dirInput.click(); }}, 'Choose folder')));
+  dz.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); dz.classList.add('over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+  dz.addEventListener('drop', async e => { e.preventDefault(); e.stopPropagation(); dz.classList.remove('over'); queueFiles(await entriesFromDrop(e.dataTransfer)); drawUpload(); });
+
+  const total = upload.queue.reduce((s, q) => s + q.file.size, 0);
+  const queue = upload.queue.length > 0 && h('div', {},
+    h('div', {style: {display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', 'margin-top': '14px'}},
+      h('span', {class: 'tiny muted', text: `${upload.queue.length} file${upload.queue.length === 1 ? '' : 's'} · ${fmt.size(total)}`}),
+      h('button', {class: 'btn btn-ghost btn-sm', type: 'button', text: 'Clear all', onclick: () => { upload.queue = []; drawUpload(); }})),
+    h('div', {class: 'queue'}, upload.queue.map((q, i) => h('div', {class: 'qrow'}, ficon({name: q.file.name, mimeType: q.file.type, type: 'file'}), h('span', {class: 'n', text: q.path, title: q.path}), h('span', {class: 'muted', text: fmt.size(q.file.size)}),
+      ibtn('x', 'Remove ' + q.file.name, () => { upload.queue.splice(i, 1); drawUpload(); }, {style: {width: '28px', height: '28px'}})))));
+
+  const ex = upload.expiry;
+  const sw = h('label', {class: 'switch'}, h('input', {type: 'checkbox', checked: ex.on, 'aria-label': 'Auto-delete after upload', onchange: e => { ex.on = e.target.checked; drawUpload(); }}), h('span'));
+  const summary = h('span', {class: 'tiny muted'});
+  const updSummary = () => {
+    if (!ex.on) return summary.textContent = 'Files are kept until someone deletes them.';
+    if (ex.mode === 'duration') summary.textContent = ex.minutes >= 1 ? `Each file is permanently deleted ${ex.minutes} min after it finishes uploading.` : 'Enter at least 1 minute.';
+    else summary.textContent = ex.date && Date.parse(ex.date) > Date.now() ? `Files are permanently deleted on ${fmt.datetime(Date.parse(ex.date))}.` : 'Pick a future date and time.';
+  };
+  const presets = h('div', {class: 'chips'}, [[10, '10 min'], [60, '1 hour'], [1440, '1 day'], [10080, '7 days']].map(([m, l]) => h('button', {class: 'chip', type: 'button', 'aria-pressed': String(ex.mode === 'duration' && ex.minutes === m), text: l, onclick: () => { ex.mode = 'duration'; ex.minutes = m; drawUpload(); }})));
+  const expiry = h('div', {class: 'expiry'},
+    h('div', {style: {display: 'flex', 'align-items': 'center', gap: '12px'}}, sw, h('div', {style: {flex: '1'}}, h('b', {text: 'Auto-delete', style: {'font-size': '13px', display: 'block'}}), summary), icon('clock')),
+    ex.on && h('div', {class: 'opts'}, presets,
+      h('label', {}, h('input', {type: 'radio', name: 'exm', checked: ex.mode === 'duration', onchange: () => { ex.mode = 'duration'; updSummary(); }}), 'Delete after',
+        h('input', {class: 'input', type: 'number', min: '1', step: '1', value: ex.minutes, style: {height: '32px'}, 'aria-label': 'Minutes', oninput: e => { ex.mode = 'duration'; ex.minutes = Math.floor(Number(e.target.value)); updSummary(); }}), 'minutes'),
+      h('label', {}, h('input', {type: 'radio', name: 'exm', checked: ex.mode === 'date', onchange: () => { ex.mode = 'date'; updSummary(); }}), 'Delete at',
+        h('input', {class: 'input', type: 'datetime-local', value: ex.date, style: {height: '32px'}, 'aria-label': 'Delete at date and time', oninput: e => { ex.mode = 'date'; ex.date = e.target.value; updSummary(); }})),
+      h('span', {class: 'tiny muted', text: 'Cleanup runs every few minutes. Copies people already downloaded are not affected.'})));
+  updSummary();
+
+  card.append(h('div', {class: 'modal-head'}, h('h2', {class: 'modal-title', text: 'Upload'}), ibtn('x', 'Close', () => uploadModal.close())),
+    destRow, h('div', {style: {height: '14px'}}), dz, fileInput, dirInput, queue, expiry,
+    h('div', {class: 'modal-actions'}, h('button', {class: 'btn', type: 'button', text: 'Cancel', onclick: () => uploadModal.close()}),
+      h('button', {class: 'btn btn-primary', type: 'button', disabled: !upload.queue.length || upload.running, onclick: startUpload}, icon('upload'),
+        upload.running ? 'Upload in progress…' : `Upload ${upload.queue.length || ''} file${upload.queue.length === 1 ? '' : 's'}`)));
+}
+function expiryPayload() {
+  const ex = upload.expiry;
+  if (!ex.on) return {autoDeleteMode: 'off'};
+  if (ex.mode === 'duration') { if (!(ex.minutes >= 1)) throw new Error('Enter at least 1 minute for auto-delete'); return {autoDeleteMode: 'duration', expiresInMinutes: ex.minutes}; }
+  const at = Date.parse(ex.date);
+  if (!isFinite(at) || at <= Date.now()) throw new Error('Pick a future date and time for auto-delete');
+  return {autoDeleteMode: 'date', expiresAt: at};
+}
+const toBase64 = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(new Error('Could not read the file')); r.readAsDataURL(blob); });
+async function startUpload() {
+  if (upload.running || !upload.queue.length) return;
+  let expiry; try { expiry = expiryPayload(); } catch (err) { return toast(err.message, 'error'); }
+  const jobs = upload.queue.splice(0).map(q => ({...q, status: 'queued', progress: 0}));
+  const dest = upload.dest;
+  upload.running = true; upload.cancel = false;
+  if (uploadModal) uploadModal.close(true), uploadModal = null;
+  const tray = h('div', {class: 'tray', role: 'region', 'aria-label': 'Uploads'});
+  document.body.append(tray);
+  const draw = () => {
+    const done = jobs.filter(j => j.status === 'done').length, failed = jobs.filter(j => j.status === 'failed').length;
+    const pct = jobs.reduce((s, j) => s + (j.status === 'done' ? 1 : j.progress), 0) / jobs.length * 100;
+    tray.replaceChildren(
+      h('div', {class: 'tray-head'}, icon(upload.running ? 'upload' : failed ? 'alert' : 'check'),
+        h('span', {class: 'grow', text: upload.running ? `Uploading ${Math.min(done + failed + 1, jobs.length)} of ${jobs.length}` : `${done} uploaded${failed ? `, ${failed} failed` : ''}`}),
+        upload.running ? h('button', {class: 'btn btn-ghost btn-sm', type: 'button', text: 'Stop', onclick: () => { upload.cancel = true; }})
+          : [failed ? h('button', {class: 'btn btn-sm', type: 'button', text: 'Retry failed', onclick: () => { tray.remove(); jobs.filter(j => j.status === 'failed').forEach(j => upload.queue.push({file: j.file, path: j.path})); openUpload({dest}); }}) : null,
+            ibtn('x', 'Close', () => tray.remove())]),
+      h('div', {style: {padding: '0 14px 10px'}}, h('div', {class: 'bar'}, h('i', {style: {width: pct + '%'}}))),
+      h('div', {class: 'tray-list'}, jobs.map(j => h('div', {class: 'titem ' + (j.status === 'done' ? 'done' : j.status === 'failed' ? 'fail' : '')},
+        h('div', {class: 'r'}, h('span', {class: 'n', text: j.path, title: j.error || j.path}), h('span', {class: 'muted', text: j.status === 'failed' ? 'Failed' : j.status === 'done' ? 'Done' : j.status === 'uploading' ? Math.round(j.progress * 100) + '%' : fmt.size(j.file.size)})),
+        j.status === 'uploading' && h('div', {class: 'bar' + (j.file.size <= CONFIG.DIRECT_UPLOAD_MAX ? ' indet' : '')}, h('i', {style: {width: j.progress * 100 + '%'}})),
+        j.error && h('span', {class: 'tiny', text: j.error})))));
+  };
+  draw();
+  const folderCache = new Map();
+  const ensureFolder = async (parentId, name) => {
+    const k = parentId + '/' + name;
+    if (!folderCache.has(k)) folderCache.set(k, api.post('createFolder', {parentId, name}).then(r => r.folderId));
+    return folderCache.get(k);
+  };
+  for (const job of jobs) {
+    if (upload.cancel) { job.status = 'failed'; job.error = 'Stopped'; continue; }
+    job.status = 'uploading'; draw();
+    try {
+      let parent = dest;
+      for (const part of job.path.split('/').slice(0, -1).filter(Boolean)) parent = await ensureFolder(parent, part);
+      const common = {parentId: parent, filename: job.file.name, mimeType: job.file.type || 'application/octet-stream', ...expiry};
+      if (job.file.size <= CONFIG.DIRECT_UPLOAD_MAX) {
+        await api.post('upload', {...common, base64: await toBase64(job.file)}, 300000);
+      } else {
+        const {uploadId} = await api.post('uploadStart', {...common, total: job.file.size});
+        for (let off = 0; off < job.file.size; off += CONFIG.CHUNK_SIZE) {
+          if (upload.cancel) throw new Error('Stopped');
+          const end = Math.min(off + CONFIG.CHUNK_SIZE, job.file.size);
+          const base64 = await toBase64(job.file.slice(off, end));
+          let tries = 0;
+          for (;;) {
+            try { await api.post('uploadChunk', {uploadId, start: off, end: end - 1, base64}, 300000); break; }
+            catch (err) { if (++tries >= 3 || !['network', 'timeout', 'busy'].includes(err.code)) throw err; await new Promise(r => setTimeout(r, 1500 * tries)); }
+          }
+          job.progress = end / job.file.size; draw();
+        }
+      }
+      job.status = 'done'; job.progress = 1;
+    } catch (err) { job.status = 'failed'; job.error = err.message; debug('Upload failed: ' + job.path, err); }
+    draw();
+  }
+  upload.running = false; draw();
+  const ok = jobs.filter(j => j.status === 'done').length;
+  if (ok) { toast(`${ok} file${ok === 1 ? '' : 's'} uploaded`, 'success'); refresh({silent: true}); }
+  if (!jobs.some(j => j.status === 'failed')) setTimeout(() => tray.remove(), 5000);
+}
+async function newFolder(parentId) {
+  const v = await dialog({title: 'New folder', fields: [{name: 'name', label: 'Folder name', required: true, autofocus: true, max: 180}], confirmText: 'Create'});
+  if (!v) return null;
+  try {
+    const r = await api.post(admin.valid() ? 'adminCreateFolder' : 'createFolder', {parentId, name: v.name});
+    toast(r.existed ? `“${v.name}” already exists — using it` : `Folder “${v.name}” created`, 'success');
+    await refresh({silent: true});
+    return r.folderId;
+  } catch (err) { toast(err.message, 'error'); return null; }
+}
+
+/* drop anywhere + paste */
+let dragDepth = 0;
+const hasFiles = e => [...(e.dataTransfer && e.dataTransfer.types || [])].includes('Files');
+addEventListener('dragenter', e => { if (!hasFiles(e)) return; e.preventDefault(); dragDepth++; const f = currentFolder(); $('#dropall-dest').textContent = 'into ' + (f ? f.name : 'Home'); $('#dropall').classList.add('show'); });
+addEventListener('dragover', e => { if (hasFiles(e)) e.preventDefault(); });
+addEventListener('dragleave', e => { if (!hasFiles(e)) return; if (--dragDepth <= 0) { dragDepth = 0; $('#dropall').classList.remove('show'); } });
+addEventListener('drop', async e => {
+  if (!hasFiles(e)) return; e.preventDefault(); dragDepth = 0; $('#dropall').classList.remove('show');
+  openUpload({files: await entriesFromDrop(e.dataTransfer)});
+});
+addEventListener('paste', e => {
+  const files = [...(e.clipboardData && e.clipboardData.files || [])];
+  if (!files.length || /INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  e.preventDefault();
+  openUpload({files: files.map((f, i) => ({file: f, path: f.name && f.name !== 'image.png' ? f.name : `pasted-${new Date().toISOString().replace(/[:.]/g, '-')}-${i}.${(f.type.split('/')[1] || 'bin')}`}))});
+});
+
+/* =====================================================================
+   ADMIN
+   ===================================================================== */
+let adminModal = null;
+const adm = {section: 'overview', trash: false, trashItems: [], selected: new Set(), q: '', type: 'all', sort: 'name', target: null, pads: null, temp: null, status: null};
+async function openAdmin() {
+  if (!admin.valid()) {
+    const v = await dialog({title: 'Admin sign in', message: 'Enter the admin password to manage files, pads and settings.', confirmText: 'Sign in',
+      fields: [{name: 'password', label: 'Password', type: 'password', required: true, autofocus: true, max: 200}]});
+    if (!v) return;
+    try {
+      const r = await api.post('adminLogin', {password: v.password});
+      admin.token = r.token; admin.expiresAt = r.expiresAt; admin.save(); admin.touch();
+      renderAdminPill(); toast('Signed in as admin', 'success');
+    } catch (err) { toast(err.message, 'error'); if (err.code === 'auth') openAdmin(); return; }
+  }
+  if (adminModal) return;
+  const card = h('div', {class: 'modal-card xl', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Admin dashboard'});
+  adminModal = openModal(card, {onClose: () => { adminModal = null; }});
+  drawAdmin();
+}
+function drawAdmin() {
+  if (!adminModal) return;
+  const card = adminModal.card; card.replaceChildren();
+  const nav = [['overview', 'Overview', 'zap'], ['pads', 'Pads', 'pad'], ['files', 'Files', 'folder'], ['temp', 'Auto-delete', 'clock']];
+  const main = h('div', {class: 'adm-main'});
+  card.append(h('div', {class: 'adm-head'}, icon('shield'), h('h2', {text: 'Admin'}),
+      h('button', {class: 'btn btn-sm', type: 'button', onclick: () => admin.logout()}, icon('logout', 'ic-sm'), 'Sign out'), ibtn('x', 'Close', () => adminModal.close())),
+    h('div', {class: 'adm'}, h('nav', {class: 'adm-nav'}, nav.map(([k, l, ic]) => h('button', {class: 'row' + (adm.section === k ? ' active' : ''), type: 'button', onclick: () => { adm.section = k; drawAdmin(); }}, icon(ic), h('span', {class: 'name', text: l})))), main));
+  ({overview: admOverview, pads: admPads, files: admFiles, temp: admTemp})[adm.section](main);
+}
+function admLoading(main) { main.append(h('div', {class: 'loading', style: {height: '200px'}}, h('div', {class: 'spinner'}))); }
+function admOverview(main) {
+  const stat = (l, v) => h('div', {class: 'stat'}, h('span', {text: l}), h('b', {text: v}));
+  main.append(h('div', {class: 'stats'}, stat('Files', state.files.length), stat('Folders', state.folders.length - 1), stat('Pads', state.pads.length), stat('Storage used', fmt.size(state.totalSize)),
+    stat('Auto-deleting', state.files.filter(f => f.expiresAt).length)));
+  const st = adm.status;
+  const panel = h('div', {class: 'panel'}, h('h3', {text: 'Server'}));
+  if (!st) { panel.append(h('p', {text: 'Checking…'})); api.post('adminStatus').then(r => { adm.status = r.server; drawAdmin(); }).catch(err => { panel.append(h('p', {text: err.message})); }); }
+  else panel.append(h('dl', {class: 'kv', style: {'grid-template-columns': '200px 1fr'}}, [
+    ['Setup completed', st.setupDone ? 'Yes' : 'No — run setup() in Apps Script'],
+    ['Auto-delete trigger', st.cleanupTriggers ? 'Running' : 'Not installed — run setup()'],
+    ['Public uploads', st.publicUploads ? 'Allowed (max ' + st.maxUploadMb + ' MB)' : 'Admin only'],
+    ['New uploads shared', st.shareUploads ? 'Anyone with the link can view' : 'Private']].map(([a, b]) => [h('dt', {text: a}), h('dd', {text: b})])));
+  main.append(panel, h('div', {class: 'panel'}, h('h3', {text: 'Cache'}), h('p', {text: 'Clears the server cache and rebuilds the file list for everyone. Use this if Drive changes made outside this site are not showing.'}),
+    h('button', {class: 'btn btn-primary', type: 'button', onclick: async e => { e.currentTarget.disabled = true; try { await api.post('adminPurgeCache'); toast('Cache cleared', 'success'); await refresh(); } catch (err) { toast(err.message, 'error'); } drawAdmin(); }}, icon('refresh'), 'Purge cache & rebuild')));
+}
+function admPads(main) {
+  main.append(h('div', {class: 'adm-toolbar'}, h('b', {text: 'Pads', style: {flex: '1'}}), h('button', {class: 'btn btn-primary btn-sm', type: 'button', onclick: adminPadCreate}, icon('plus', 'ic-sm'), 'New pad')));
+  if (!adm.pads) { admLoading(main); api.post('adminPads').then(r => { adm.pads = r.docs; drawAdmin(); }).catch(err => toast(err.message, 'error')); return; }
+  if (!adm.pads.length) return main.append(h('div', {class: 'empty'}, icon('pad'), h('b', {text: 'No pads yet'})));
+  adm.pads.forEach(p => {
+    const pad = state.pads.find(x => x.id === p.id) || Object.assign({}, p, {isPad: true, name: p.title});
+    main.append(h('div', {class: 'arow'}, ficon({isPad: true}), h('div', {class: 't'}, h('b', {text: p.title}), h('span', {text: `v${p.version} · ${p.updatedAt ? fmt.ago(p.updatedAt) : '—'} · ${p.isLocked ? 'Locked' : 'Unlocked'}${p.hasPin ? ' · PIN set' : ''} · ${p.content.length.toLocaleString()} chars${p.storedInFile ? ' (large pad)' : ''}`})),
+      h('div', {class: 'acts'},
+        h('button', {class: 'btn btn-sm', type: 'button', text: 'Open', onclick: () => { adminModal.close(); openItem(pad); }}),
+        h('button', {class: 'btn btn-sm', type: 'button', text: 'Rename', onclick: () => adminPadRename(pad)}),
+        h('button', {class: 'btn btn-sm', type: 'button', text: p.hasPin ? 'Change PIN' : 'Set PIN', onclick: () => adminPadPin(pad)}),
+        h('button', {class: 'btn btn-sm', type: 'button', text: p.isLocked ? 'Unlock' : 'Lock', onclick: () => adminPadUpdate(pad, {isLocked: !p.isLocked}, p.isLocked ? 'Pad unlocked' : 'Pad locked')}),
+        h('button', {class: 'btn btn-sm btn-danger', type: 'button', text: 'Delete', onclick: () => adminPadDelete(pad)}))));
+  });
+}
+async function adminPadUpdate(pad, fields, msg) {
+  try { await api.post('adminUpdatePad', Object.assign({docId: pad.id}, fields)); toast(msg, 'success'); adm.pads = null; await refresh({silent: true}); drawAdmin(); }
+  catch (err) { toast(err.message, 'error'); }
+}
+async function adminPadCreate() {
+  const v = await dialog({title: 'New pad', confirmText: 'Create pad', fields: [
+    {name: 'title', label: 'Title', required: true, autofocus: true, max: 100},
+    {name: 'content', label: 'Starting text', type: 'textarea'},
+    {name: 'pin', label: 'PIN (optional)', type: 'password', hint: 'At least 4 characters. People need it to read or edit a locked pad.', max: 64}],
+    validate: v2 => v2.pin && v2.pin.length < 4 ? 'PIN must be at least 4 characters' : null});
+  if (!v) return;
+  try { await api.post('adminCreatePad', {title: v.title, content: v.content, pin: v.pin}); toast('Pad created', 'success'); adm.pads = null; await refresh({silent: true}); drawAdmin(); }
+  catch (err) { toast(err.message, 'error'); }
+}
+async function adminPadRename(pad) {
+  const v = await dialog({title: 'Rename pad', fields: [{name: 'title', label: 'Title', value: pad.title, required: true, autofocus: true, max: 100}], confirmText: 'Rename'});
+  if (v) adminPadUpdate(pad, {title: v.title}, 'Pad renamed');
+}
+async function adminPadPin(pad) {
+  const v = await dialog({title: 'Pad PIN', message: 'Leave empty to remove the PIN (this also unlocks the pad).', confirmText: 'Save',
+    fields: [{name: 'pin', label: 'New PIN', type: 'password', autofocus: true, max: 64}, {name: 'lock', label: 'Lock the pad now', type: 'checkbox', value: true}],
+    validate: v2 => v2.pin && v2.pin.length < 4 ? 'PIN must be at least 4 characters' : null});
+  if (v) adminPadUpdate(pad, v.pin ? {pin: v.pin, isLocked: v.lock} : {pin: ''}, v.pin ? 'PIN saved' : 'PIN removed');
+}
+async function adminPadDelete(pad) {
+  if (!await confirmDialog({title: 'Delete pad?', message: `“${pad.title}” will be deleted permanently.`, confirmText: 'Delete', danger: true})) return;
+  try {
+    await api.post('adminDeletePad', {docId: pad.id});
+    const t = state.tabs.find(x => x.key === 'pad:' + pad.id); if (t) { t.dirty = false; closeTab(t.key); }
+    toast('Pad deleted', 'success'); adm.pads = null; await refresh({silent: true}); drawAdmin();
+  } catch (err) { toast(err.message, 'error'); }
+}
+async function adminRename(item) {
+  const v = await dialog({title: 'Rename', fields: [{name: 'name', label: 'Name', value: item.name, required: true, autofocus: true, max: 180}], confirmText: 'Rename'});
+  if (!v || v.name === item.name) return;
+  try { await api.post('adminRename', {itemId: item.id, name: v.name}); toast('Renamed', 'success'); await refresh({silent: true}); drawAdmin(); }
+  catch (err) { toast(err.message, 'error'); }
+}
+async function adminBulk(label, items, fn) {
+  let ok = 0; const fails = [];
+  for (const it of items) { try { await fn(it); ok++; } catch (err) { fails.push(it.name + ': ' + err.message); } }
+  adm.selected.clear();
+  toast(fails.length ? `${label}: ${ok} done, ${fails.length} failed — ${fails[0]}` : `${label}: ${ok} item${ok === 1 ? '' : 's'}`, fails.length ? 'error' : 'success');
+  await refresh({silent: true});
+  if (adm.trash) await loadTrash();
+  drawAdmin();
+}
+async function adminTrash(items) {
+  if (!items.length) return;
+  if (!await confirmDialog({title: `Move ${items.length === 1 ? '“' + items[0].name + '”' : items.length + ' items'} to trash?`, message: 'You can restore from the trash later.', confirmText: 'Move to trash', danger: true})) return;
+  adminBulk('Moved to trash', items, it => api.post('adminTrash', {itemId: it.id}));
+}
+async function adminMoveDialog(items) {
+  const v = await dialog({title: `Move ${items.length === 1 ? '“' + items[0].name + '”' : items.length + ' items'}`, confirmText: 'Move',
+    fields: [{name: 'target', label: 'Destination folder', type: 'select', value: adm.target || state.rootId, options: state.folders.map(f => ({value: f.id, label: f.path}))}]});
+  if (!v) return;
+  const bad = items.find(it => it.type === 'folder' && (v.target === it.id || (state.byId.get(v.target) || {pathIds: []}).pathIds.includes(it.id)));
+  if (bad) return toast(`“${bad.name}” cannot be moved into itself`, 'error');
+  adminBulk('Moved', items, it => api.post('adminMove', {itemId: it.id, targetFolderId: v.target}));
+}
+async function loadTrash() {
+  try { adm.trashItems = (await api.post('adminListTrash')).items; } catch (err) { toast(err.message, 'error'); adm.trashItems = []; }
+}
+function admFiles(main) {
+  const search = h('input', {class: 'input', type: 'search', placeholder: 'Search names and folders…', value: adm.q, 'aria-label': 'Search files'});
+  search.addEventListener('input', debounce(() => { adm.q = search.value; drawAdmin(); const s = adminModal && adminModal.card.querySelector('.adm-toolbar input'); if (s) { s.focus(); s.setSelectionRange(s.value.length, s.value.length); } }, 200));
+  const type = h('select', {class: 'select', 'aria-label': 'Type', onchange: e => { adm.type = e.target.value; drawAdmin(); }}, [['all', 'All items'], ['file', 'Files'], ['folder', 'Folders'], ['image', 'Images'], ['video', 'Videos'], ['audio', 'Audio'], ['pdf', 'PDFs']].map(([v, l]) => h('option', {value: v, text: l, selected: adm.type === v})));
+  const sort = h('select', {class: 'select', 'aria-label': 'Sort', onchange: e => { adm.sort = e.target.value; drawAdmin(); }}, [['name', 'Name'], ['modified', 'Modified'], ['size', 'Size'], ['type', 'Type']].map(([v, l]) => h('option', {value: v, text: 'Sort: ' + l, selected: adm.sort === v})));
+  main.append(h('div', {class: 'adm-toolbar'}, search, type, sort,
+    !adm.trash && h('button', {class: 'btn btn-sm', type: 'button', onclick: () => newFolder(adm.target || state.rootId).then(() => drawAdmin())}, icon('folder-plus', 'ic-sm'), 'Folder'),
+    !adm.trash && h('button', {class: 'btn btn-sm', type: 'button', onclick: () => { adminModal.close(); openUpload({dest: adm.target || state.rootId}); }}, icon('upload', 'ic-sm'), 'Upload'),
+    h('button', {class: 'btn btn-sm' + (adm.trash ? ' btn-primary' : ''), type: 'button', onclick: async () => { adm.trash = !adm.trash; adm.selected.clear(); if (adm.trash) { drawAdmin(); await loadTrash(); } drawAdmin(); }}, icon(adm.trash ? 'folder' : 'trash', 'ic-sm'), adm.trash ? 'Back to files' : 'Trash')));
+  let items;
+  if (adm.trash) {
+    if (!adm.trashItems) return admLoading(main);
+    items = adm.trashItems.map(t => Object.assign({path: 'Trash'}, t));
+  } else items = [...state.byId.values()].filter(i => !i.isPad);
+  const q = adm.q.trim().toLowerCase();
+  items = items.filter(i => (!q || (i.name + ' ' + i.path).toLowerCase().includes(q)) &&
+    (adm.type === 'all' || (adm.type === 'file' ? i.type !== 'folder' : adm.type === 'folder' ? i.type === 'folder' : kindOf(i) === adm.type)));
+  items.sort((a, b) => adm.sort === 'modified' ? String(b.modifiedTime || '').localeCompare(a.modifiedTime || '') : adm.sort === 'size' ? (b.size || 0) - (a.size || 0) : adm.sort === 'type' ? kindOf(a).localeCompare(kindOf(b)) : String(a.name).localeCompare(b.name, undefined, {numeric: true}));
+  const visibleIds = items.map(i => i.id);
+  adm.selected = new Set([...adm.selected].filter(id => visibleIds.includes(id) || state.byId.has(id)));
+  const sel = items.filter(i => adm.selected.has(i.id));
+  const allSel = items.length && items.every(i => adm.selected.has(i.id));
+  main.append(h('div', {class: 'selbar'}, h('label', {class: 'check'}, h('input', {type: 'checkbox', checked: !!allSel, 'aria-label': 'Select all', onchange: e => { items.forEach(i => e.target.checked ? adm.selected.add(i.id) : adm.selected.delete(i.id)); drawAdmin(); }}), sel.length ? `${sel.length} selected` : `${items.length} item${items.length === 1 ? '' : 's'}`),
+    h('span', {style: {flex: '1'}}),
+    sel.length > 0 && !adm.trash && [
+      h('button', {class: 'btn btn-sm', type: 'button', onclick: () => adminMoveDialog(sel)}, icon('move', 'ic-sm'), 'Move'),
+      h('button', {class: 'btn btn-sm', type: 'button', onclick: () => { const files = sel.flatMap(i => i.type === 'folder' ? state.files.filter(f => f.pathIds.includes(i.id)) : [i]); files.forEach((f, n) => setTimeout(() => downloadItem(f), n * 350)); toast(`Downloading ${files.length} file(s) — allow multiple downloads if asked`); }}, icon('download', 'ic-sm'), 'Download'),
+      h('button', {class: 'btn btn-sm btn-danger', type: 'button', onclick: () => adminTrash(sel.filter(i => !sel.some(p => p.type === 'folder' && (i.pathIds || []).includes(p.id))))}, icon('trash', 'ic-sm'), 'Trash')],
+    sel.length > 0 && adm.trash && [
+      h('button', {class: 'btn btn-sm', type: 'button', onclick: () => adminBulk('Restored', sel, it => api.post('adminRestore', {itemId: it.id}))}, icon('restore', 'ic-sm'), 'Restore'),
+      h('button', {class: 'btn btn-sm btn-danger', type: 'button', onclick: async () => { if (await confirmDialog({title: `Delete ${sel.length} item(s) forever?`, message: 'This cannot be undone.', confirmText: 'Delete forever', danger: true})) adminBulk('Deleted forever', sel, it => api.post('adminDeleteForever', {itemId: it.id})); }}, icon('trash', 'ic-sm'), 'Delete forever')],
+    sel.length > 0 && h('button', {class: 'btn btn-ghost btn-sm', type: 'button', text: 'Clear', onclick: () => { adm.selected.clear(); drawAdmin(); }})));
+  if (!items.length) return main.append(h('div', {class: 'empty'}, icon(adm.trash ? 'trash' : 'search'), h('b', {text: adm.trash ? 'Trash is empty' : 'No items match'})));
+  const shown = items.slice(0, 400);
+  shown.forEach(it => {
+    const details = h('details', {}, h('summary', {text: 'Details'}));
+    details.addEventListener('toggle', () => {
+      if (!details.open || details.dataset.loaded) return; details.dataset.loaded = '1';
+      const kv = h('dl', {class: 'kv'}, [['ID', it.id], ['Type', it.mimeType || KIND_LABEL[kindOf(it)]], ['Size', fmt.size(it.size)], ['Modified', fmt.datetime(it.modifiedTime)]].map(([a, b]) => [h('dt', {text: a}), h('dd', {text: b})]));
+      details.append(kv);
+      api.post('adminDetails', {itemId: it.id}).then(r => kv.append(h('dt', {text: 'Owner'}), h('dd', {text: r.details.ownerEmail || r.details.ownerName || '—'}), h('dt', {text: 'Created'}), h('dd', {text: fmt.datetime(r.details.createdTime)}))).catch(err => kv.append(h('dt', {text: 'Error'}), h('dd', {text: err.message})));
+    });
+    main.append(h('div', {class: 'arow'},
+      h('div', {style: {display: 'flex', gap: '10px', 'align-items': 'center'}}, h('input', {type: 'checkbox', checked: adm.selected.has(it.id), 'aria-label': 'Select ' + it.name, onchange: e => { e.target.checked ? adm.selected.add(it.id) : adm.selected.delete(it.id); drawAdmin(); }}), ficon(it)),
+      h('div', {class: 't'}, h('b', {text: it.name}), h('span', {text: `${it.path} · ${it.type === 'folder' ? (it.children || []).length + ' items' : fmt.size(it.size)}`})),
+      h('div', {class: 'acts'}, adm.trash
+        ? [h('button', {class: 'btn btn-sm', type: 'button', text: 'Restore', onclick: () => adminBulk('Restored', [it], x => api.post('adminRestore', {itemId: x.id}))}),
+           h('button', {class: 'btn btn-sm btn-danger', type: 'button', text: 'Delete forever', onclick: async () => { if (await confirmDialog({title: `Delete “${it.name}” forever?`, message: 'This cannot be undone.', confirmText: 'Delete forever', danger: true})) adminBulk('Deleted forever', [it], x => api.post('adminDeleteForever', {itemId: x.id})); }})]
+        : [it.type !== 'folder' && h('button', {class: 'btn btn-sm', type: 'button', text: 'Preview', onclick: () => { adminModal.close(); openItem(it); }}),
+           it.type === 'folder' && h('button', {class: 'btn btn-sm', type: 'button', text: adm.target === it.id ? '✓ Destination' : 'Use as destination', onclick: () => { adm.target = it.id; toast(`New folders and uploads will go to “${it.name}”`); drawAdmin(); }}),
+           h('button', {class: 'btn btn-sm', type: 'button', text: 'Rename', onclick: () => adminRename(it)}),
+           h('button', {class: 'btn btn-sm', type: 'button', text: 'Move', onclick: () => adminMoveDialog([it])}),
+           h('button', {class: 'btn btn-sm', type: 'button', text: 'Link', onclick: () => copyText(it.type === 'folder' ? `https://drive.google.com/drive/folders/${it.id}` : viewUrl(it.id))}),
+           h('button', {class: 'btn btn-sm btn-danger', type: 'button', text: 'Trash', onclick: () => adminTrash([it])})]),
+      details));
+  });
+  if (items.length > shown.length) main.append(h('p', {class: 'muted tiny', style: {padding: '10px'}, text: `Showing ${shown.length} of ${items.length}. Search to narrow it down.`}));
+}
+function admTemp(main) {
+  main.append(h('div', {class: 'adm-toolbar'}, h('b', {text: 'Files scheduled for automatic deletion', style: {flex: '1'}}),
+    h('button', {class: 'btn btn-sm', type: 'button', onclick: () => { adm.temp = null; drawAdmin(); }}, icon('refresh', 'ic-sm'), 'Refresh'),
+    h('button', {class: 'btn btn-primary btn-sm', type: 'button', onclick: async () => {
+      try { const c = (await api.post('adminTempCleanup')).cleanup; toast(c.failed.length ? `Deleted ${c.deleted}, ${c.failed.length} failed: ${c.failed[0].message}` : c.deleted ? `Deleted ${c.deleted} expired file(s)` : 'Nothing has expired yet', c.failed.length ? 'error' : 'success'); adm.temp = null; await refresh({silent: true}); drawAdmin(); }
+      catch (err) { toast(err.message, 'error'); } }}, icon('zap', 'ic-sm'), 'Run cleanup now')));
+  if (!adm.temp) { admLoading(main); api.post('adminTempList').then(r => { adm.temp = r.items; drawAdmin(); }).catch(err => toast(err.message, 'error')); return; }
+  if (!adm.temp.length) return main.append(h('div', {class: 'empty'}, icon('clock'), h('b', {text: 'No files are set to auto-delete'})));
+  adm.temp.forEach(t => main.append(h('div', {class: 'arow'}, ficon(t), h('div', {class: 't'}, h('b', {text: t.name}), h('span', {}, `Deletes ${fmt.datetime(t.expiresAt)} · `, h('span', {class: 'badge warn', dataset: {expires: t.expiresAt}}))),
+    h('div', {class: 'acts'},
+      h('button', {class: 'btn btn-sm', type: 'button', text: 'Keep forever', onclick: async () => { try { await api.post('adminTempCancel', {fileId: t.id}); toast('Auto-delete cancelled', 'success'); adm.temp = null; await refresh({silent: true}); drawAdmin(); } catch (err) { toast(err.message, 'error'); } }}),
+      h('button', {class: 'btn btn-sm btn-danger', type: 'button', text: 'Delete now', onclick: async () => { if (!await confirmDialog({title: `Delete “${t.name}” now?`, message: 'It is deleted permanently.', confirmText: 'Delete', danger: true})) return; try { await api.post('adminTempDelete', {fileId: t.id}); toast('Deleted', 'success'); adm.temp = null; await refresh({silent: true}); drawAdmin(); } catch (err) { toast(err.message, 'error'); } }})))));
+  tickCountdowns();
+}
+
+/* =====================================================================
+   THEME · SHORTCUTS · SIDEBAR (mobile) · COUNTDOWNS
+   ===================================================================== */
+function effectiveTheme() { return document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); }
+function setTheme(t) {
+  if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  store.del('drive_theme_mode');
+  t ? store.set('dw_theme', t) : store.del('dw_theme');
+  try { t ? localStorage.setItem('dw_theme', t) : localStorage.removeItem('dw_theme'); } catch {}
+  $('#theme-btn use').setAttribute('href', effectiveTheme() === 'dark' ? '#i-sun' : '#i-moon');
+}
+function toggleTheme() { setTheme(effectiveTheme() === 'dark' ? 'light' : 'dark'); }
+function openShortcuts() {
+  const rows = [['Search everything', 'Ctrl K'], ['Filter the sidebar', '/'], ['Upload files', 'U'], ['Go home', 'H'], ['Refresh', 'R'], ['Toggle theme', 'T'], ['Fullscreen', 'F'],
+    ['Save pad / file', 'Ctrl S'], ['Close tab', 'Alt W'], ['Next / previous tab', 'Alt → / ←'], ['Admin', 'Ctrl Shift A'], ['Debug log', 'Ctrl Shift D'], ['Close dialogs', 'Esc'], ['This list', '?']];
+  const card = h('div', {class: 'modal-card', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Keyboard shortcuts'},
+    h('div', {class: 'modal-head'}, h('h2', {class: 'modal-title', text: 'Keyboard shortcuts'}), ibtn('x', 'Close', () => m.close())),
+    h('div', {class: 'shortcuts'}, rows.map(([a, b]) => [h('span', {text: a}), h('span', {class: 'kbd', text: b})])));
+  const m = openModal(card);
+}
+function openSidebar() { $('#sidebar').classList.add('open'); $('#scrim').classList.add('open'); }
+function closeSidebar() { $('#sidebar').classList.remove('open'); $('#scrim').classList.remove('open'); }
+let lastExpiredRefresh = 0;
+function tickCountdowns() {
+  let expired = false;
+  document.querySelectorAll('[data-expires]').forEach(el => {
+    const at = Number(el.dataset.expires);
+    el.textContent = fmt.left(at);
+    if (Date.now() - at > 6 * 60000) expired = true;
+  });
+  if (expired && Date.now() - lastExpiredRefresh > 120000) { lastExpiredRefresh = Date.now(); refresh({silent: true}); }
+}
+
+document.addEventListener('keydown', e => {
+  const tag = (document.activeElement && document.activeElement.tagName) || '';
+  const typing = /INPUT|TEXTAREA|SELECT/.test(tag) || (document.activeElement && document.activeElement.isContentEditable);
+  const mod = e.ctrlKey || e.metaKey;
+  if (e.key === 'Escape') {
+    if (openMenuEl) return closeMenu();
+    if (modals.length) return modals[modals.length - 1].close();
+    if (drawerEl) return closeInfo();
+    if ($('#sidebar').classList.contains('open')) return closeSidebar();
+    if (state.query) { state.query = ''; $('#side-search').value = ''; renderSidebar(); }
+    return;
+  }
+  if (mod && e.key.toLowerCase() === 'k') { e.preventDefault(); return openPalette(); }
+  if (mod && e.key.toLowerCase() === 's') { const t = activeTab(); if (t && isEditable(t)) { e.preventDefault(); saveTab(t); } return; }
+  if (mod && e.shiftKey && e.key.toLowerCase() === 'a') { e.preventDefault(); return openAdmin(); }
+  if (mod && e.shiftKey && e.key.toLowerCase() === 'd') {
+    e.preventDefault();
+    const p = $('#debug'); if (p) return p.remove();
+    return document.body.append(h('div', {class: 'debug', id: 'debug', text: logs.join('\n') || 'No log entries yet.'}));
+  }
+  if (e.altKey && e.key.toLowerCase() === 'w') { e.preventDefault(); if (state.active !== 'home') closeTab(state.active); return; }
+  if (e.altKey && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+    e.preventDefault();
+    const keys = ['home', ...state.tabs.map(t => t.key)], i = keys.indexOf(state.active);
+    return activate(keys[(i + (e.key === 'ArrowRight' ? 1 : -1) + keys.length) % keys.length]);
+  }
+  if (typing || mod || e.altKey || modals.length) return;
+  const k = e.key.toLowerCase();
+  if (k === '/') { e.preventDefault(); openSidebar(); $('#side-search').focus(); }
+  else if (k === '?' || e.key === 'F1') { e.preventDefault(); openShortcuts(); }
+  else if (k === 'u') openUpload();
+  else if (k === 'h') activate('home');
+  else if (k === 'r') refresh();
+  else if (k === 't') toggleTheme();
+  else if (k === 'f') toggleFullscreen();
+  else if ((k === 'arrowdown' || k === 'arrowup') && document.activeElement && document.activeElement.closest('.side-scroll')) {
+    e.preventDefault();
+    const rows = [...document.querySelectorAll('.side-scroll .row')].filter(r => r.offsetParent !== null);
+    const i = rows.indexOf(document.activeElement);
+    const next = rows[k === 'arrowdown' ? Math.min(rows.length - 1, i + 1) : Math.max(0, i - 1)]; if (next) next.focus();
+  } else if ((k === 'arrowright' || k === 'arrowleft') && document.activeElement && document.activeElement.dataset.folder) {
+    const row = document.activeElement, open = row.getAttribute('aria-expanded') === 'true';
+    if ((k === 'arrowright') !== open) row.click();
+  }
+});
+addEventListener('beforeunload', e => { if (state.tabs.some(t => t.dirty)) { e.preventDefault(); e.returnValue = ''; } });
+
+/* =====================================================================
+   WIRE UP + START
+   ===================================================================== */
+$('#side-search').addEventListener('input', debounce(e => { state.query = e.target.value; renderSidebar(); }, 120));
+$('#side-search').addEventListener('keydown', e => { if (e.key === 'Enter') { const first = $('#side-results .row'); if (first) first.click(); } });
+$('#side-clear').onclick = () => { $('#side-search').value = ''; state.query = ''; renderSidebar(); $('#side-search').focus(); };
+$('#nav-home').onclick = () => { browseTo(null); closeSidebar(); };
+$('#collapse-all').onclick = () => { state.expanded.clear(); store.set('dw_expanded', []); renderTree(); };
+$('#upload-btn').onclick = () => { closeSidebar(); openUpload(); };
+$('#theme-btn').onclick = toggleTheme;
+$('#keys-btn').onclick = openShortcuts;
+$('#admin-btn').onclick = () => { closeSidebar(); openAdmin(); };
+$('#menu-btn').onclick = openSidebar;
+$('#scrim').onclick = closeSidebar;
+$('#refresh-btn').onclick = () => refresh();
+$('#palette-btn').onclick = openPalette;
+matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => setTheme(document.documentElement.dataset.theme || null));
+
+admin.load(); admin.touch(); renderAdminPill(); setTheme(document.documentElement.dataset.theme || null);
+const cached = store.get('dw_bootstrap_v2', null);
+if (cached) { try { applyData(cached, true); } catch (err) { debug('Bad cached data', err); } }
+renderAll();
+refresh({silent: !!cached});
+setInterval(tickCountdowns, 1000);
+setInterval(renderStatus, 30000);
+setInterval(pollVersion, CONFIG.POLL_MS);
+document.addEventListener('visibilitychange', pollVersion);
+})();
+</script>
+</body>
+</html>
